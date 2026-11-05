@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Painel de Briefings &bull; G. Lovato Roseira</title>
+
+  <!-- Google Fonts: Metal Mania (Títulos) & Barlow (Corpo) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700&family=Metal+Mania&display=swap" rel="stylesheet">
+
+  <!-- Early Theme Initialization -->
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    })();
+  </script>
+
+  <link rel="stylesheet" href="briefing.css">
+
+  <!-- Firebase JS SDK (CDN Compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+</head>
+<body data-page="painel">
+
+  <header class="briefing-header">
+    <div class="briefing-header-inner">
+      <a href="../index.html" class="brand-badge">
+        <img src="../assets/wolf-crest.svg" alt="Brasão de Lobo" class="brand-crest">
+        <span class="brand-title">G. LOVATO ROSEIRA</span>
+      </a>
+      <div class="header-user-nav">
+        <span class="user-tag" id="userEmailTag">Painel de Administradora</span>
+        <button id="themeToggle" class="theme-toggle-btn" aria-label="Alternar Tema Claro/Escuro" title="Alternar Tema">☀️</button>
+        <button id="logoutBtn" class="btn-doc btn-doc-ghost" style="padding: 0.4rem 0.8rem; font-size: 0.75rem;">SAIR</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="doc-container">
+    
+    <div class="document-header-block" style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+      <div>
+        <span class="doc-category-badge">GESTÃO DE PROJETOS</span>
+        <h1 class="doc-title" style="margin-bottom: 0;">ACERVO DE BRIEFINGS</h1>
+      </div>
+      <button id="newBriefingBtn" class="btn-doc btn-doc-primary">
+        + NOVO BRIEFING
+      </button>
+    </div>
+
+    <!-- Filtro e Pesquisa Simples -->
+    <div class="panel-controls">
+      <div class="search-box">
+        <input type="text" id="searchInput" class="search-input" placeholder="Pesquisar briefing por nome de projeto ou palavra-chave...">
+      </div>
+      <select id="categoryFilter" class="search-input" style="width: auto; min-width: 180px;">
+        <option value="todos">Todas as Áreas</option>
+        <option value="interface">Interface (UX/UI)</option>
+        <option value="audiovisual">Audiovisual</option>
+        <option value="grafico">Identidade Visual</option>
+      </select>
+    </div>
+
+    <!-- Tabela de Briefings -->
+    <div class="briefings-table-wrapper">
+      <table class="briefings-table">
+        <thead>
+          <tr>
+            <th>PROJETO / TÍTULO</th>
+            <th>ÁREA</th>
+            <th>DATA DE CRIAÇÃO</th>
+            <th>AÇÕES</th>
+          </tr>
+        </thead>
+        <tbody id="briefingsTableBody">
+          <!-- Preenchido dinamicamente via JS -->
+          <tr>
+            <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+              Carregando briefings do sistema...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+
+  <!-- MODAL DE CRIAÇÃO / EDIÇÃO DE BRIEFING -->
+  <div class="modal-overlay" id="briefingModal">
+    <div class="modal-content-box">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid var(--color-graphite); padding-bottom: 0.8rem;">
+        <h2 class="modal-doc-title" id="modalTitleText" style="font-size: 1.6rem; margin: 0;">NOVO BRIEFING</h2>
+        <button id="modalCloseX" class="btn-doc btn-doc-ghost" style="padding: 0.3rem 0.6rem;">&times;</button>
+      </div>
+
+      <form id="briefingForm">
+        <input type="hidden" id="briefingIdInput" value="">
+
+        <div class="form-group">
+          <label for="formTitle" class="form-label">TÍTULO DO PROJETO *</label>
+          <input type="text" id="formTitle" class="form-control" placeholder="Ex: Redesign de Interface para Plataforma Grimoire" required>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label for="formCategory" class="form-label">ÁREA DO PROJETO *</label>
+            <select id="formCategory" class="form-control" required>
+              <option value="interface">Design de Interface (UX/UI)</option>
+              <option value="audiovisual">Audiovisual & Motion</option>
+              <option value="grafico">Identidade Visual & Gráfico</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="formDate" class="form-label">DATA DE CRIAÇÃO</label>
+            <input type="date" id="formDate" class="form-control" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="formMaterial" class="form-label">LINK PARA MATERIAL DE APOIO (URL)</label>
+          <input type="url" id="formMaterial" class="form-control" placeholder="Ex: https://figma.com/file/seumaterial">
+        </div>
+
+        <div class="form-group">
+          <label for="formContent" class="form-label">CONTEÚDO DO BRIEFING (TEXTO / HTML) *</label>
+          <textarea id="formContent" class="form-control" rows="8" placeholder="Digite os objetivos, requisitos técnicos, tom de voz e entregáveis do projeto..." required></textarea>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 1.5rem;">
+          <button type="button" id="modalCancelBtn" class="btn-doc btn-doc-ghost">CANCELAR</button>
+          <button type="submit" class="btn-doc btn-doc-primary">SALVAR BRIEFING</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="firebase-config.js"></script>
+  <script src="briefing.js"></script>
+</body>
+</html>

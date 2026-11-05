@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Projetados: Curta-Metragem de Suspense e Terror | G. Lovato Roseira</title>
+
+  <!-- Google Fonts: Metal Mania & Barlow -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Metal+Mania&display=swap" rel="stylesheet">
+
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    })();
+  </script>
+
+  <link rel="stylesheet" href="projeto.css">
+</head>
+<body data-project="projetados">
+
+  <!-- CABEÇALHO INSTITUCIONAL -->
+  <header class="case-header">
+    <div class="widescreen-canvas case-header-inner">
+      <a href="../index.html#projetos" class="case-brand-logo" aria-label="G. Lovato Roseira - Retornar ao Portfólio">
+        <img src="../assets/logo compacta clara.svg" alt="G. Lovato Roseira" class="logo-compact--light">
+        <img src="../assets/logo compacta escura.svg" alt="G. Lovato Roseira" class="logo-compact--dark">
+      </a>
+
+      <nav class="case-header-nav">
+        <a href="../index.html#projetos" class="back-to-catalog-link">
+          &larr; CATÁLOGO DE PROJETOS
+        </a>
+        <button id="caseThemeToggle" class="case-theme-toggle" aria-label="Alternar Tema Claro/Escuro" title="Alternar Tema">☀️</button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO SECTION ASSIMÉTRICA 16:9 -->
+    <section class="project-hero-section">
+      <div class="widescreen-canvas project-hero-grid">
+        
+        <div class="project-hero-info">
+          <span class="category-pill-badge" id="heroBadge">AUDIOVISUAL</span>
+          <h1 class="project-page-title" id="heroTitle">Projetados: Curta-Metragem de Suspense e Terror</h1>
+
+          <div class="project-meta-strip">
+            <div class="meta-pill-item">
+              <span class="meta-label">ANO</span>
+              <span class="meta-value" id="metaYear">2025</span>
+            </div>
+            <div class="meta-pill-item">
+              <span class="meta-label">PAPEL / FUNÇÃO</span>
+              <span class="meta-value" id="metaRole">Edição de Vídeo, Montagem, Roteiro &amp; Pré-Produção</span>
+            </div>
+            <div class="meta-pill-item">
+              <span class="meta-label">CONTEXTO</span>
+              <span class="meta-value" id="metaContext">Laboratório de Audiovisual (Desenho Industrial - UFSM) &bull; Coautoria com Hardie Ray</span>
+            </div>
+            <div class="meta-pill-item" style="flex: 1 1 100%;">
+              <span class="meta-label">FERRAMENTAS UTILIZADAS</span>
+              <div class="tools-tags-list" id="metaToolsList"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-hero-cover-anchor">
+          <div class="cover-frame-widescreen" id="coverFrame" data-youtube-id="Gg0aG_iJ3h8">
+            <img src="../assets/projetos/projetados-yt-thumbnail.jpg" alt="Miniatura oficial do curta-metragem Projetados no YouTube" class="cover-image-main" id="heroCoverImg">
+            <button class="video-play-trigger" id="videoPlayTrigger" type="button" aria-label="Assistir ao curta-metragem Projetados">
+              <span class="video-play-disc">
+                <svg class="play-svg-icon" viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z"/>
+                </svg>
+              </span>
+              <span class="video-play-label">ASSISTIR CURTA-METRAGEM</span>
+            </button>
+            <div class="cover-caption-badge" id="coverCaption">Quadro principal: miniatura oficial do curta-metragem Projetados (clique para assistir)</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- RESUMO DO PROJETO -->
+    <section class="project-summary-section">
+      <div class="widescreen-canvas">
+        <div class="summary-card-asymmetric">
+          <div class="summary-title-block">
+            <h2>VISÃO GERAL</h2>
+            <div class="summary-tagline">CONTEXTO &bull; PROPÓSITO &bull; DESAFIO</div>
+          </div>
+          <div class="summary-content-block">
+            <p class="summary-text-lead" id="summaryText">Carregando resumo do projeto...</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROCESSO DE DESENVOLVIMENTO (LAYOUT ZIGZAG) -->
+    <section class="project-process-section">
+      <div class="widescreen-canvas">
+        <div class="section-headline">
+          <span class="section-tag-dossier">METODOLOGIA &bull; CRIAÇÃO</span>
+          <h2 class="section-title-large">PROCESSO DE DESENVOLVIMENTO</h2>
+          <div class="engraved-divider-accent"></div>
+        </div>
+
+        <div class="process-steps-container" id="processStepsContainer"></div>
+      </div>
+    </section>
+
+    <!-- GALERIA DE IMAGENS -->
+    <section class="project-gallery-section">
+      <div class="widescreen-canvas">
+        <div class="section-headline">
+          <span class="section-tag-dossier">REGISTROS VISUAIS &bull; PRANCHAS &bull; BASTIDORES</span>
+          <h2 class="section-title-large">GALERIA DE PRODUÇÃO</h2>
+          <div class="engraved-divider-accent"></div>
+        </div>
+
+        <!-- Filtros por Categoria de Produção -->
+        <div class="gallery-filter-bar" id="galleryFilterBar">
+          <button class="gallery-filter-btn active" data-gallery-filter="todos">
+            TODOS OS REGISTROS (13)
+          </button>
+          <button class="gallery-filter-btn" data-gallery-filter="roteiro-storyboard">
+            ROTEIRO &amp; STORYBOARD
+          </button>
+          <button class="gallery-filter-btn" data-gallery-filter="arte-locacoes">
+            DIREÇÃO DE ARTE &amp; LOCAÇÕES
+          </button>
+          <button class="gallery-filter-btn" data-gallery-filter="personagens">
+            PERSONAGENS &amp; FIGURINOS
+          </button>
+          <button class="gallery-filter-btn" data-gallery-filter="divulgacao">
+            CARTAZ &amp; ELENCO
+          </button>
+        </div>
+
+        <div class="asymmetric-gallery-grid" id="asymmetricGallery"></div>
+      </div>
+    </section>
+
+    <!-- NAVEGAÇÃO ENTRE PROJETOS -->
+    <footer class="project-footer-nav">
+      <div class="widescreen-canvas">
+        <div class="nav-projects-strip">
+          <a href="#" class="nav-project-card nav-project-card--prev" id="prevProjectLink">
+            <span class="nav-direction-label">&larr; PROJETO ANTERIOR</span>
+            <span class="nav-project-title" id="prevProjectTitle">--</span>
+          </a>
+
+          <div class="nav-divider-center"></div>
+
+          <a href="#" class="nav-project-card nav-project-card--next" id="nextProjectLink">
+            <span class="nav-direction-label">PRÓXIMO PROJETO &rarr;</span>
+            <span class="nav-project-title" id="nextProjectTitle">--</span>
+          </a>
+        </div>
+
+        <div class="nav-back-button-wrap">
+          <a href="../index.html#projetos" class="btn-primary-catalog">
+            &larr; VOLTAR AO CATÁLOGO DE PROJETOS
+          </a>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <!-- LIGHTBOX -->
+  <div class="lightbox-modal" id="lightboxModal" role="dialog" aria-hidden="true" aria-label="Visualizador de Imagem Ampliada">
+    <button class="lightbox-close-btn" id="lightboxClose" aria-label="Fechar Visualizador">&times;</button>
+    <button class="lightbox-btn lightbox-btn--prev" id="lightboxPrev" aria-label="Imagem Anterior">&#10094;</button>
+    <button class="lightbox-btn lightbox-btn--next" id="lightboxNext" aria-label="Próxima Imagem">&#10095;</button>
+
+    <div class="lightbox-container">
+      <img src="" alt="" class="lightbox-img" id="lightboxImg">
+      <div class="lightbox-caption-bar">
+        <p class="lightbox-caption-text" id="lightboxCaption"></p>
+        <p class="lightbox-counter" id="lightboxCounter"></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="projetos-data.js"></script>
+  <script src="projeto.js"></script>
+</body>
+</html>

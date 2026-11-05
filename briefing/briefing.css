@@ -1,0 +1,1356 @@
+/* ==========================================================================
+   G. LOVATO ROSEIRA - SEÇÃO DE BRIEFINGS & DOSSIÊ ANTIGO
+   Motivo Gráfico: Dossiê Físico sobre Mesa Escura (Envelhecido, Selo & Régua)
+   ========================================================================== */
+
+:root, [data-theme="dark"] {
+  /* Modo Escuro */
+  --bg-dark: #0E1013;
+  --bg-card: #1B1E24;
+  --bg-paper-sheet: #1E2229;
+  --bg-paper: #E8DFC8;
+  --text-light: #E8DFC8;
+  --text-dark: #14161A;
+  --text-muted: #A8A08D;
+  --color-graphite: #5A554C;
+  --color-brass: #B08B4F;
+  --color-brass-light: #D4AF37;
+  --shadow-color: rgba(0, 0, 0, 0.7);
+
+  /* Acentos por Categoria */
+  --accent-interface: #2C5F7C;
+  --accent-audiovisual: #4B4368;
+  --accent-grafico: #1F5C52;
+
+  /* Tipografia */
+  --font-display: 'Metal Mania', cursive, serif;
+  --font-body: 'Barlow', sans-serif;
+}
+
+[data-theme="light"] {
+  /* Modo Claro */
+  --bg-dark: #DCD4C2;
+  --bg-card: #F4ECE0;
+  --bg-paper-sheet: #F7EFDF;
+  --bg-paper: #14161A;
+  --text-light: #14161A;
+  --text-dark: #F4ECE0;
+  --text-muted: #484D56;
+  --color-graphite: #8A8275;
+  --color-brass: #8C692D;
+  --color-brass-light: #B08B4F;
+  --shadow-color: rgba(0, 0, 0, 0.25);
+
+  /* Acentos Ajustados para Contraste AA no Modo Claro */
+  --accent-interface: #1D4D66;
+  --accent-audiovisual: #3A3252;
+  --accent-grafico: #12463E;
+}
+
+/* Reset Geral */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: var(--bg-dark);
+  color: var(--text-light);
+  font-family: var(--font-body);
+  font-size: clamp(1rem, 0.4vw + 0.9rem, 1.15rem);
+  line-height: 1.6;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-light);
+  min-height: 100vh;
+}
+
+/* Container de Leitura / Documento */
+.doc-container {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+}
+
+/* Header Fixo do Módulo */
+.briefing-header {
+  background-color: var(--bg-card);
+  border-bottom: 2px solid var(--color-graphite);
+  padding: 1rem 0;
+  transition: background-color 0.25s ease;
+}
+
+.briefing-header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.brand-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+}
+
+.brand-crest {
+  width: 38px;
+  height: 38px;
+}
+
+.brand-title {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  color: var(--text-light);
+  letter-spacing: 0.08em;
+}
+
+.header-user-nav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-tag {
+  font-size: 0.85rem;
+  color: var(--color-brass);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+/* Títulos principais em Metal Mania */
+h1, h2, .doc-title, .modal-doc-title, .form-step-title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  color: var(--text-light);
+  letter-spacing: 0.08em;
+  line-height: 1.15;
+}
+
+/* Títulos secundários e corpo em Barlow */
+h3, h4, h5, h6, p, li, span, label, input, select, textarea, button {
+  font-family: var(--font-body);
+}
+
+/* Cartão de Documento Sóbrio (Módulo Administrativo) */
+.document-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--color-graphite);
+  border-top: 4px solid var(--color-brass);
+  padding: 2.5rem;
+  box-shadow: 6px 6px 0px var(--shadow-color);
+  margin-bottom: 2rem;
+}
+
+.document-header-block {
+  border-bottom: 1px solid var(--color-graphite);
+  padding-bottom: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.doc-category-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  padding: 0.25rem 0.65rem;
+  background-color: var(--color-brass);
+  color: #FFF;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+
+.doc-title {
+  font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+  line-height: 1.2;
+  margin-bottom: 0.75rem;
+}
+
+.doc-meta-row {
+  display: flex;
+  gap: 1.5rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  flex-wrap: wrap;
+}
+
+.doc-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.doc-meta-item strong {
+  color: var(--color-brass);
+}
+
+/* Conteúdo Formatado do Briefing */
+.doc-body-content {
+  font-size: clamp(1rem, 0.4vw + 0.95rem, 1.12rem);
+  line-height: 1.65;
+  color: var(--text-light);
+}
+
+.doc-body-content h2 {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 1.35rem;
+  color: var(--color-brass);
+  margin: 1.8rem 0 0.8rem 0;
+  border-bottom: 1px dashed var(--color-graphite);
+  padding-bottom: 0.3rem;
+}
+
+.doc-body-content p {
+  margin-bottom: 1.2rem;
+}
+
+.doc-body-content ul, 
+.doc-body-content ol {
+  margin: 1rem 0 1.5rem 1.5rem;
+}
+
+.doc-body-content li {
+  margin-bottom: 0.4rem;
+}
+
+/* Seção de Material de Apoio */
+.doc-materials-box {
+  background-color: var(--bg-dark);
+  border: 1px stroke var(--color-graphite);
+  border-left: 3px solid var(--color-brass);
+  padding: 1.2rem 1.5rem;
+  margin-top: 2rem;
+}
+
+.materials-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--color-brass);
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.materials-link {
+  color: var(--text-light);
+  word-break: break-all;
+  font-size: 0.95rem;
+  text-decoration: underline;
+}
+
+.materials-link:hover {
+  color: var(--color-brass);
+}
+
+/* Botões do Módulo */
+.btn-doc {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border: 1px solid var(--color-brass);
+  background-color: transparent;
+  color: var(--text-light);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 3px 3px 0px var(--shadow-color);
+}
+
+.btn-doc-primary {
+  background-color: var(--color-brass);
+  color: #FFF;
+}
+
+.btn-doc-primary:hover {
+  background-color: var(--text-light);
+  border-color: var(--text-light);
+  color: var(--bg-dark);
+  transform: translate(-1px, -1px);
+}
+
+.btn-doc-danger {
+  border-color: #A33A3A;
+  color: #E88A8A;
+}
+
+.btn-doc-danger:hover {
+  background-color: #A33A3A;
+  color: #FFF;
+}
+
+.btn-doc-ghost {
+  border-color: var(--color-graphite);
+  color: var(--text-muted);
+}
+
+.btn-doc-ghost:hover {
+  border-color: var(--text-light);
+  color: var(--text-light);
+}
+
+.theme-toggle-btn {
+  background: var(--bg-dark);
+  border: 1px solid var(--color-graphite);
+  color: var(--text-light);
+  font-size: 1.1rem;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 2px 2px 0px var(--shadow-color);
+}
+
+.theme-toggle-btn:hover {
+  border-color: var(--color-brass);
+  transform: scale(1.08);
+}
+
+/* Tabela e Listagem do Painel */
+.panel-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.search-box {
+  flex: 1;
+  min-width: 260px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background-color: var(--bg-dark);
+  border: 1px solid var(--color-graphite);
+  color: var(--text-light);
+  outline: none;
+  font-size: 0.95rem;
+}
+
+.search-input:focus {
+  border-color: var(--color-brass);
+}
+
+.briefings-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--color-graphite);
+  background-color: var(--bg-card);
+  box-shadow: 6px 6px 0px var(--shadow-color);
+}
+
+.briefings-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.briefings-table th {
+  background-color: var(--bg-dark);
+  padding: 1rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--color-brass);
+  border-bottom: 2px solid var(--color-graphite);
+  text-transform: uppercase;
+}
+
+.briefings-table td {
+  padding: 1.1rem 1rem;
+  border-bottom: 1px solid var(--color-graphite);
+  font-size: 0.95rem;
+}
+
+.briefings-table tr:hover td {
+  background-color: var(--bg-dark);
+}
+
+.table-title {
+  font-weight: 600;
+  color: var(--text-light);
+}
+
+.table-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Formulário de Login & Modais */
+.login-card-wrapper {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  background-color: var(--bg-card);
+  border: 2px solid var(--color-brass);
+  padding: 2.5rem;
+  box-shadow: 8px 8px 0px var(--shadow-color);
+}
+
+.login-logo {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.login-crest-img {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 0.5rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text-light);
+  margin-bottom: 0.5rem;
+}
+
+.form-label-sub {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--text-muted);
+  margin-left: 0.25rem;
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  background-color: var(--bg-dark);
+  border: 1px solid var(--color-graphite);
+  color: var(--text-light);
+  outline: none;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease;
+}
+
+.form-control:focus {
+  border-color: var(--color-brass);
+}
+
+.feedback-msg {
+  padding: 0.75rem;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+  display: none;
+}
+
+.feedback-error {
+  background-color: rgba(163, 58, 58, 0.2);
+  border: 1px solid #A33A3A;
+  color: #F59E9E;
+}
+
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(10, 11, 14, 0.9);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.25s ease;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-content-box {
+  background-color: var(--bg-card);
+  border: 2px solid var(--color-brass);
+  width: 100%;
+  max-width: 680px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 2rem;
+  box-shadow: 10px 10px 0px var(--shadow-color);
+}
+
+/* ==========================================================================
+   5. MOTIVO GRÁFICO: DOSSIÊ ANTIGO SOBRE MESA DE TRABALHO
+   ========================================================================== */
+
+/* Fundo geral da página = superfície escura da mesa */
+body[data-page="formulario"] {
+  background-color: var(--bg-dark);
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 3px,
+      rgba(255, 255, 255, 0.012) 3px,
+      rgba(255, 255, 255, 0.012) 4px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 3px,
+      rgba(255, 255, 255, 0.012) 3px,
+      rgba(255, 255, 255, 0.012) 4px
+    );
+}
+
+.client-form-container {
+  min-height: 100vh;
+  padding: 3.5rem 1.5rem 6rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Wrapper que recebe a sombra projetada (exterior à folha, não afetado pelo clip-path) */
+.documento-folha-wrapper {
+  width: 100%;
+  max-width: 820px;
+  /* Sombra projetada em camadas: sombra difusa + sombra dura estilo objeto físico */
+  filter: drop-shadow(0px 28px 40px rgba(0,0,0,0.75))
+          drop-shadow(8px 12px 0px rgba(0,0,0,0.55));
+  position: relative;
+}
+
+/* A folha em si: papel envelhecido, canto dobrado, sem rotação */
+.documento-folha {
+  width: 100%;
+  background-color: #E8DBC0;
+  background-image:
+    radial-gradient(ellipse 60% 30% at 15% 20%, rgba(100, 75, 40, 0.10) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 50% at 85% 70%, rgba(80, 55, 25, 0.09) 0%, transparent 60%),
+    radial-gradient(ellipse 30% 20% at 50% 90%, rgba(90, 65, 30, 0.07) 0%, transparent 80%),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
+  color: #1A1510;
+
+  /* Canto superior direito cortado (dog-ear) — 36px */
+  clip-path: polygon(
+    0 0,
+    calc(100% - 36px) 0,
+    100% 36px,
+    100% 100%,
+    0 100%
+  );
+
+  /* Sem rotação */
+  transform: none;
+
+  padding: 3.5rem 3.5rem 3.5rem 3.5rem;
+  position: relative;
+}
+
+/* Triângulo de sombra interna do canto dobrado */
+.documento-folha::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(
+    225deg,
+    rgba(0,0,0,0.18) 0%,
+    rgba(0,0,0,0.06) 50%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+/* Ajuste de cores do conteúdo da folha para o papel envelhecido (todas as escritas escuras) */
+.documento-folha {
+  color: #1A1510;
+}
+
+.documento-folha p,
+.documento-folha span,
+.documento-folha label,
+.documento-folha em,
+.documento-folha strong,
+.documento-folha div {
+  color: #1A1510;
+}
+
+.documento-folha h1,
+.documento-folha h2,
+.documento-folha h3,
+.documento-folha h4 {
+  color: #0E0C08 !important;
+}
+
+.documento-folha .form-label {
+  color: #1A1510 !important;
+}
+
+.documento-folha .form-label-sub {
+  color: #1A1510 !important;
+}
+
+.documento-folha .form-step-title {
+  color: #0E0C08 !important;
+}
+
+/* Anula qualquer texto amarelo ou claro inline na folha */
+.documento-folha [style*="color: var(--color-brass)"],
+.documento-folha [style*="color:var(--color-brass)"],
+.documento-folha [style*="color: var(--color-ink-muted)"],
+.documento-folha [style*="color:var(--color-ink-muted)"],
+.documento-folha [style*="color: var(--text-muted)"],
+.documento-folha [style*="color:var(--text-muted)"],
+.documento-folha [style*="color: var(--text-light)"],
+.documento-folha [style*="color:var(--text-light)"] {
+  color: #1A1510 !important;
+}
+
+.documento-folha .text-muted {
+  color: #1A1510 !important;
+}
+
+.documento-folha .torn-paper-divider {
+  background: repeating-linear-gradient(
+    90deg,
+    #7A5C2E 0px,
+    #7A5C2E 12px,
+    transparent 12px,
+    transparent 16px
+  );
+  opacity: 0.6;
+}
+
+/* Barra de progresso: textos escuros */
+.documento-folha .progress-info,
+.documento-folha .progress-info span {
+  color: #1A1510 !important;
+}
+.documento-folha .progress-bar-track {
+  background-color: rgba(0,0,0,0.12);
+  border-color: rgba(0,0,0,0.2);
+}
+
+/* Réguas e Medidores de 1 a 5: ambos os lados escuros */
+.documento-folha .ruler-scale-gauge {
+  background-color: rgba(0,0,0,0.06);
+  border-color: rgba(0,0,0,0.2);
+}
+.documento-folha .scale-header {
+  color: #1A1510 !important;
+}
+.documento-folha .scale-label-left {
+  color: #1A1510 !important;
+}
+.documento-folha .scale-label-right {
+  color: #1A1510 !important;
+}
+.documento-folha .scale-btn-label {
+  background-color: rgba(255,255,255,0.35);
+  border-color: rgba(0,0,0,0.2);
+  color: #1A1510 !important;
+}
+.documento-folha .scale-btn-item input[type="radio"]:checked + .scale-btn-label {
+  background-color: #1A1510 !important;
+  color: #E8DBC0 !important;
+  border-color: #1A1510 !important;
+}
+
+/* Opções de caixas de seleção */
+.documento-folha .option-box {
+  background-color: rgba(255,255,255,0.3);
+  border-color: rgba(0,0,0,0.18);
+  color: #1A1510 !important;
+}
+.documento-folha .option-box-text {
+  color: #1A1510 !important;
+}
+
+/* Inputs e Textareas */
+.documento-folha .notebook-line-input,
+.documento-folha .notebook-line-textarea {
+  background-color: rgba(255,255,255,0.2);
+  color: #1A1510 !important;
+  border-bottom-color: rgba(0,0,0,0.3);
+}
+.documento-folha .notebook-line-input::placeholder,
+.documento-folha .notebook-line-textarea::placeholder {
+  color: #5C4B35;
+}
+.documento-folha .notebook-line-input:focus,
+.documento-folha .notebook-line-textarea:focus {
+  border-bottom-color: #1A1510;
+  background-color: rgba(255,255,255,0.35);
+}
+
+/* Seletor de cores */
+.documento-folha .color-picker-box {
+  background-color: rgba(0,0,0,0.07);
+  border-color: rgba(0,0,0,0.2);
+  color: #1A1510 !important;
+}
+.documento-folha .color-sub-group label {
+  color: #1A1510 !important;
+}
+.documento-folha .btn-add-color {
+  border-color: #1A1510;
+  color: #1A1510 !important;
+}
+.documento-folha .btn-add-color:hover {
+  background-color: rgba(0,0,0,0.08);
+  color: #0E0C08 !important;
+}
+.documento-folha .color-chip-dossier {
+  background-color: rgba(255,255,255,0.4);
+  border-color: rgba(0,0,0,0.2);
+}
+.documento-folha .chip-hex-code {
+  color: #1A1510 !important;
+}
+.documento-folha .chip-remove-btn {
+  color: #1A1510 !important;
+}
+
+/* Cards de categoria na Etapa 1 */
+.documento-folha .category-select-card {
+  background-color: rgba(255,255,255,0.25);
+  border-color: rgba(0,0,0,0.2);
+}
+.documento-folha .cat-card-title {
+  color: #0E0C08 !important;
+}
+.documento-folha .cat-card-desc {
+  color: #1A1510 !important;
+}
+
+/* Badges */
+.documento-folha .doc-category-badge {
+  border-color: rgba(0,0,0,0.2);
+  color: #0E0C08 !important;
+  background-color: rgba(0,0,0,0.1);
+}
+
+/* Tela de confirmação */
+.documento-folha .confirmation-card {
+  color: #1A1510 !important;
+}
+.documento-folha .confirmation-title {
+  color: #0E0C08 !important;
+}
+.documento-folha .confirmation-desc {
+  color: #1A1510 !important;
+}
+.documento-folha .confirmation-card div {
+  color: #1A1510 !important;
+}
+
+/* Botões do formulário */
+.documento-folha .btn-doc-ghost {
+  border-color: rgba(0,0,0,0.3);
+  color: #1A1510 !important;
+}
+.documento-folha .btn-doc-ghost:hover {
+  border-color: #1A1510;
+  color: #000000 !important;
+  background-color: rgba(0,0,0,0.06);
+}
+.documento-folha .form-step-actions {
+  border-top-color: rgba(0,0,0,0.15);
+}
+
+/* Modo claro: papel mais claro sobre fundo mais claro */
+[data-theme="light"] .documento-folha {
+  background-color: #EDE2C8;
+  background-image:
+    radial-gradient(ellipse 60% 30% at 15% 20%, rgba(120, 90, 40, 0.10) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 50% at 85% 70%, rgba(100, 70, 20, 0.08) 0%, transparent 60%);
+}
+[data-theme="light"] .documento-folha-wrapper {
+  filter: drop-shadow(0px 20px 30px rgba(0,0,0,0.30))
+          drop-shadow(6px 8px 0px rgba(0,0,0,0.18));
+}
+
+/* .dossier-paper-sheet is now a semantic class only — all visual styling is on .documento-folha */
+.dossier-paper-sheet {
+  position: relative;
+}
+
+.dossier-stamp-seal {
+  position: absolute;
+  top: 1.5rem;
+  right: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.4rem 0.8rem;
+  border: 2px dashed var(--color-brass);
+  border-radius: 4px;
+  opacity: 0.85;
+  transform: rotate(5deg);
+  background-color: rgba(176, 139, 79, 0.08);
+  pointer-events: none;
+}
+
+.stamp-seal-icon {
+  width: 32px;
+  height: 32px;
+}
+
+.stamp-seal-text {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--color-brass);
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.torn-paper-divider {
+  height: 4px;
+  margin: 2rem 0;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--color-brass) 0px,
+    var(--color-brass) 12px,
+    transparent 12px,
+    transparent 16px
+  );
+  position: relative;
+  opacity: 0.7;
+}
+
+.notebook-line-input {
+  width: 100%;
+  padding: 0.75rem 0.5rem;
+  background-color: transparent;
+  border: none;
+  border-bottom: 2px solid var(--color-graphite);
+  color: var(--text-light);
+  outline: none;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.notebook-line-input:focus {
+  border-bottom-color: var(--color-brass);
+  background-color: rgba(176, 139, 79, 0.06);
+}
+
+.notebook-line-textarea {
+  width: 100%;
+  padding: 0.75rem 0.5rem;
+  background-color: rgba(0, 0, 0, 0.08);
+  border: none;
+  border-bottom: 2px solid var(--color-graphite);
+  color: var(--text-light);
+  outline: none;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  transition: border-color 0.2s ease;
+}
+
+.notebook-line-textarea:focus {
+  border-bottom-color: var(--color-brass);
+  background-color: rgba(176, 139, 79, 0.06);
+}
+
+/* ESCALA ENTALHADA (TIPO RÉGUA GRAVADA) 1 A 5 */
+.ruler-scale-gauge {
+  background-color: var(--bg-dark);
+  border: 1px solid var(--color-graphite);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.25rem;
+  position: relative;
+}
+
+.ruler-ticks {
+  height: 6px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--color-graphite) 0px,
+    var(--color-graphite) 2px,
+    transparent 2px,
+    transparent 12px
+  );
+  margin-bottom: 0.8rem;
+  opacity: 0.6;
+}
+
+.scale-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-light);
+  margin-bottom: 0.8rem;
+}
+
+.scale-label-left {
+  color: var(--color-brass);
+}
+
+.scale-label-right {
+  color: #1A1510;
+  text-align: right;
+}
+
+.scale-buttons-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.scale-btn-item {
+  flex: 1;
+  text-anchor: center;
+  text-align: center;
+}
+
+.scale-btn-item input[type="radio"] {
+  display: none;
+}
+
+.scale-btn-label {
+  display: block;
+  padding: 0.65rem 0;
+  background-color: var(--bg-card);
+  border: 1px solid var(--color-graphite);
+  color: var(--text-muted);
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.scale-btn-item input[type="radio"]:checked + .scale-btn-label {
+  background-color: var(--color-brass);
+  color: #FFF;
+  border-color: var(--color-brass);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3), 2px 2px 0px var(--shadow-color);
+}
+
+.scale-btn-label:hover {
+  border-color: var(--color-brass);
+  color: var(--text-light);
+}
+
+/* ==========================================================================
+   6. SEÇÃO DE PALETA DE CORES (CHIPS ESTILO CARIMBO DO DOSSIÊ)
+   ========================================================================== */
+.color-picker-box {
+  background-color: var(--bg-dark);
+  border: 1px solid var(--color-graphite);
+  padding: 1.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.color-sub-group {
+  margin-bottom: 1.5rem;
+}
+
+.color-sub-group:last-child {
+  margin-bottom: 0;
+}
+
+.color-sub-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--color-brass);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.btn-add-color {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  background-color: transparent;
+  border: 1px dashed var(--color-brass);
+  color: var(--color-brass);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-add-color:hover {
+  background-color: rgba(176, 139, 79, 0.15);
+  border-style: solid;
+  color: var(--text-light);
+}
+
+/* Container de Chips */
+.color-chips-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 0.8rem 0;
+  min-height: 38px;
+}
+
+/* Chips Estilo Carimbo do Dossiê */
+.color-chip-dossier {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.65rem;
+  background-color: var(--bg-card);
+  border: 1px solid var(--color-graphite);
+  box-shadow: 2px 2px 0px var(--shadow-color);
+  font-size: 0.85rem;
+  user-select: none;
+}
+
+.chip-swatch {
+  width: 18px;
+  height: 18px;
+  border-radius: 2px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  display: inline-block;
+}
+
+.chip-hex-code {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+  color: var(--text-light);
+  text-transform: uppercase;
+}
+
+.chip-remove-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0 0.2rem;
+  transition: color 0.15s ease;
+}
+
+.chip-remove-btn:hover {
+  color: #E88A8A;
+}
+
+/* Barra de Progresso no Dossiê */
+.progress-container {
+  margin-bottom: 2rem;
+}
+
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-brass);
+  letter-spacing: 0.1em;
+}
+
+.progress-bar-track {
+  width: 100%;
+  height: 8px;
+  background-color: var(--bg-dark);
+  border: 1px solid var(--color-graphite);
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  width: 33%;
+  background-color: var(--color-brass);
+  transition: width 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* ETAPA 1: CARDS GRANDES DE CATEGORIA */
+.category-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.category-select-card {
+  background-color: var(--bg-dark);
+  border: 2px solid var(--color-graphite);
+  padding: 2rem 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 5px 5px 0px var(--shadow-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.category-select-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 8px 8px 0px var(--shadow-color);
+}
+
+.card-grafico:hover,
+.category-select-card.selected.card-grafico {
+  border-color: var(--accent-grafico);
+}
+
+.card-audiovisual:hover,
+.category-select-card.selected.card-audiovisual {
+  border-color: var(--accent-audiovisual);
+}
+
+.card-interface:hover,
+.category-select-card.selected.card-interface {
+  border-color: var(--accent-interface);
+}
+
+.cat-card-icon {
+  font-size: 2.8rem;
+  line-height: 1;
+}
+
+.cat-card-title {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  color: var(--text-light);
+  line-height: 1.2;
+}
+
+.cat-card-desc {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* GRUPOS DE OPÇÃO E SELEÇÃO ÚNICA/MÚLTIPLA */
+.options-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 0.5rem;
+}
+
+.option-box {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background-color: var(--bg-dark);
+  border: 1px solid var(--color-graphite);
+  padding: 0.85rem 1.2rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.option-box:hover {
+  border-color: var(--color-brass);
+}
+
+.option-box input[type="radio"],
+.option-box input[type="checkbox"] {
+  accent-color: var(--color-brass);
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.option-box-text {
+  font-size: 0.95rem;
+  color: var(--text-light);
+}
+
+/* CAMPO CONDICIONAL */
+.conditional-field {
+  display: none;
+  margin-top: 0.75rem;
+  padding-left: 1rem;
+  border-left: 2px solid var(--color-brass);
+}
+
+.conditional-field.active {
+  display: block;
+}
+
+/* TELA DE CONFIRMAÇÃO DO DOSSIÊ */
+.confirmation-card {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.confirmation-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.confirmation-title {
+  font-size: 2.4rem;
+  color: var(--color-brass);
+  margin-bottom: 1rem;
+}
+
+.confirmation-desc {
+  font-size: 1.1rem;
+  color: var(--text-light);
+  max-width: 580px;
+  margin: 0 auto 2rem auto;
+  line-height: 1.7;
+}
+
+/* Navegação entre Etapas */
+.form-step-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-graphite);
+}
+
+/* ==========================================================================
+   FOLHA DE ESTILO DEDICADA DE IMPRESSÃO / DOWNLOAD EM PDF (@media print)
+   ========================================================================== */
+@media print {
+  body {
+    background-color: #FFFFFF !important;
+    color: #111111 !important;
+    font-size: 12pt;
+    line-height: 1.5;
+  }
+
+  .briefing-header-inner .header-user-nav,
+  .print-hide-btn,
+  .btn-doc,
+  .panel-controls,
+  .menu-toggle,
+  .modal-overlay,
+  .login-card-wrapper,
+  .form-step-actions,
+  .progress-container,
+  .theme-toggle-btn {
+    display: none !important;
+  }
+
+  .doc-container,
+  .client-form-container {
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .document-card,
+  .dossier-paper-sheet,
+  .documento-folha,
+  .documento-folha-wrapper {
+    background-color: #FFFFFF !important;
+    border: none !important;
+    box-shadow: none !important;
+    filter: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    transform: none !important;
+    clip-path: none !important;
+    color: #111111 !important;
+  }
+
+  .briefing-header {
+    background: none !important;
+    border-bottom: 2px solid #111111 !important;
+    padding: 0 0 1rem 0 !important;
+    margin-bottom: 1.5rem !important;
+  }
+
+  .brand-title {
+    color: #111111 !important;
+    font-size: 1.5rem !important;
+  }
+
+  .doc-title {
+    color: #111111 !important;
+    font-size: 20pt !important;
+  }
+
+  .doc-category-badge {
+    background-color: #111111 !important;
+    color: #FFFFFF !important;
+    border: 1px solid #111111 !important;
+  }
+
+  .doc-meta-row {
+    color: #444444 !important;
+    font-size: 10pt !important;
+  }
+
+  .doc-body-content {
+    color: #111111 !important;
+  }
+
+  .doc-body-content h2 {
+    color: #111111 !important;
+    border-bottom: 1px solid #111111 !important;
+  }
+
+  .doc-materials-box {
+    background-color: #F5F5F5 !important;
+    border: 1px solid #CCCCCC !important;
+    border-left: 3px solid #111111 !important;
+    color: #111111 !important;
+  }
+
+  .materials-link {
+    color: #111111 !important;
+  }
+
+  .document-header-block,
+  .doc-materials-box,
+  h2, p {
+    page-break-inside: avoid;
+  }
+}

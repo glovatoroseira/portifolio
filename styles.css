@@ -1,0 +1,1333 @@
+/* ==========================================================================
+   G. LOVATO ROSEIRA - PORTFÓLIO ONLINE
+   Estética: Heavy Metal 80's + Arte Gravada/Entalhada (Engraved)
+   Composição: Desktop-First (16:9 Widescreen), Grids Assimétricos & Sangrias Bleed
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. VARIÁVEIS DE DESIGN & PALETA CLARO / ESCURO
+   -------------------------------------------------------------------------- */
+:root, [data-theme="dark"] {
+  /* Modo Escuro */
+  --bg-dark: #14161A;
+  --bg-card: #1C1F25;
+  --bg-card-hover: #242932;
+  --text-paper: #E8DFC8;
+  --text-muted: #A8A08D;
+  --color-graphite: #5A554C;
+  --color-brass: #B08B4F;
+  --color-brass-light: #D4AF37;
+  --shadow-color: #000000;
+
+  /* Acentos por Categoria */
+  --accent-interface: #2C5F7C;   /* Azul Interface */
+  --accent-audiovisual: #4B4368; /* Roxo Audiovisual */
+  --accent-grafico: #1F5C52;     /* Verde Petróleo Gráfico */
+
+  /* Tipografia */
+  --font-display: 'Metal Mania', cursive, serif;
+  --font-body: 'Barlow', sans-serif;
+
+  /* Transições */
+  --transition-fast: 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+  --transition-normal: 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+[data-theme="light"] {
+  /* Modo Claro */
+  --bg-dark: #EAE3D2;
+  --bg-card: #F2EBDC;
+  --bg-card-hover: #E4DAC4;
+  --text-paper: #14161A;
+  --text-muted: #424750;
+  --color-graphite: #8A8275;
+  --color-brass: #8C692D;
+  --color-brass-light: #B08B4F;
+  --shadow-color: rgba(0, 0, 0, 0.15);
+
+  /* Acentos Ajustados para Contraste AA no Modo Claro */
+  --accent-interface: #1D4D66;
+  --accent-audiovisual: #3A3252;
+  --accent-grafico: #12463E;
+}
+
+/* Reset Básico */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: var(--bg-dark);
+  color: var(--text-paper);
+  font-family: var(--font-body);
+  /* Piso Mínimo de Legibilidade: Mínimo 16px (1rem) */
+  font-size: clamp(1rem, 0.4vw + 0.9rem, 1.15rem);
+  line-height: 1.6;
+  transition: background-color var(--transition-normal), color var(--transition-normal);
+}
+
+body {
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+  background-color: var(--bg-dark);
+  color: var(--text-paper);
+}
+
+/* --------------------------------------------------------------------------
+   2. DESKTOP-FIRST 16:9 WIDESCREEN CANVAS & COMPOSIÇÃO ASSIMÉTRICA
+   -------------------------------------------------------------------------- */
+/* Canvas expansivo para monitores Widescreen 16:9 */
+.widescreen-canvas {
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 0 4rem;
+}
+
+/* Utilitários de Sangria nas Bordas da Tela (Bleed) */
+.bleed-left-wrapper {
+  margin-left: -4rem;
+  padding-left: 4rem;
+}
+
+.bleed-right-wrapper {
+  margin-right: -4rem;
+  padding-right: 4rem;
+}
+
+/* --------------------------------------------------------------------------
+   3. ELEMENTOS GRÁFICOS & TIPOGRAFIA
+   -------------------------------------------------------------------------- */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 400;
+  color: var(--text-paper);
+}
+
+/* Metal Mania SOMENTE em Títulos Principais, Headers e Nome */
+.hero-title,
+.section-title,
+.brand-logo,
+.modal-title,
+.contato-heading {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  line-height: 1.12;
+}
+
+p {
+  font-family: var(--font-body);
+  font-weight: 400;
+  color: var(--text-paper);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+/* Separadores Estilo Entalhe Gravado Assimétricos */
+.engraved-divider {
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-brass) 0%, var(--color-graphite) 70%, transparent 100%);
+  margin: 1.5rem 0;
+  position: relative;
+}
+
+.engraved-divider-left {
+  height: 3px;
+  width: 220px;
+  margin: 1rem 0 2.5rem 0;
+  background: linear-gradient(90deg, var(--color-brass) 0%, var(--color-graphite) 80%, transparent 100%);
+  position: relative;
+}
+
+.engraved-divider-left::after {
+  content: '◆';
+  position: absolute;
+  top: 50%;
+  left: 20px;
+  transform: translateY(-50%);
+  color: var(--color-brass);
+  font-size: 10px;
+  background-color: var(--bg-dark);
+  padding: 0 6px;
+}
+
+.engraved-divider-center {
+  height: 3px;
+  width: 220px;
+  margin: 1.5rem auto 2.5rem auto;
+  background: linear-gradient(90deg, transparent 0%, var(--color-graphite) 20%, var(--color-brass) 50%, var(--color-graphite) 80%, transparent 100%);
+  position: relative;
+}
+
+.engraved-divider-center::after {
+  content: '◆';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--color-brass);
+  font-size: 10px;
+  background-color: var(--bg-dark);
+  padding: 0 6px;
+}
+
+/* Botões com Estética Angular / Entalhada */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 1.8rem;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  border: 2px solid var(--color-brass);
+  background-color: transparent;
+  color: var(--text-paper);
+  cursor: pointer;
+  position: relative;
+  transition: all var(--transition-fast);
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  box-shadow: 4px 4px 0px var(--shadow-color);
+}
+
+.btn-primary {
+  background-color: var(--color-brass);
+  color: #FFF;
+}
+
+.btn-primary:hover {
+  background-color: var(--text-paper);
+  border-color: var(--text-paper);
+  color: var(--bg-dark);
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px var(--shadow-color);
+}
+
+.btn-secondary {
+  border-color: var(--color-graphite);
+  color: var(--text-paper);
+}
+
+.btn-secondary:hover {
+  border-color: var(--color-brass);
+  color: var(--color-brass);
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px var(--shadow-color);
+}
+
+.btn-block {
+  width: 100%;
+}
+
+/* Botão de Alternância de Tema (Sol / Lua) */
+.theme-toggle-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--color-graphite);
+  color: var(--text-paper);
+  font-size: 1.1rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: 2px 2px 0px var(--shadow-color);
+}
+
+.theme-toggle-btn:hover {
+  border-color: var(--color-brass);
+  transform: scale(1.08);
+}
+
+/* --------------------------------------------------------------------------
+   4. CABEÇALHO (HEADER)
+   -------------------------------------------------------------------------- */
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background-color: var(--bg-dark);
+  border-bottom: 1px solid var(--color-graphite);
+  padding: 1rem 0;
+  transition: background-color var(--transition-normal);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  line-height: 1;
+}
+
+/* Logo marca escrita no header — tamanho aumentado */
+.logo-wordmark {
+  height: clamp(44px, 5vw, 58px);
+  width: auto;
+  display: block;
+  transition: opacity var(--transition-fast);
+}
+
+/* Modo escuro (padrão): mostra logo clara, oculta logo escura */
+:root .logo-wordmark--light,
+[data-theme="dark"] .logo-wordmark--light {
+  display: block;
+}
+:root .logo-wordmark--dark,
+[data-theme="dark"] .logo-wordmark--dark {
+  display: none;
+}
+
+/* Modo claro: mostra logo escura, oculta logo clara */
+[data-theme="light"] .logo-wordmark--light {
+  display: none;
+}
+[data-theme="light"] .logo-wordmark--dark {
+  display: block;
+}
+
+.brand-logo:hover .logo-wordmark {
+  opacity: 0.82;
+}
+
+/* Logo na hero: bem maior, ocupa o espaço do h1 */
+.hero-wordmark-wrap {
+  margin: 0.25rem 0 0.5rem 0;
+}
+
+.hero-wordmark {
+  width: clamp(260px, 42vw, 560px);
+  height: auto;
+  display: block;
+}
+
+.hero-wordmark-wrap .logo-wordmark--light,
+.hero-wordmark-wrap .logo-wordmark--dark {
+  /* herda a lógica de display das regras acima */
+  height: auto;
+  width: clamp(260px, 42vw, 560px);
+}
+
+.header-right-controls {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.nav-link {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  position: relative;
+  padding: 0.25rem 0;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0%;
+  height: 2px;
+  background-color: var(--color-brass);
+  transition: width var(--transition-fast);
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: var(--text-paper);
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+  width: 100%;
+}
+
+.menu-toggle {
+  display: none;
+  background: none;
+  border: 1px solid var(--color-graphite);
+  padding: 0.5rem;
+  cursor: pointer;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.menu-toggle .bar {
+  width: 22px;
+  height: 2px;
+  background-color: var(--text-paper);
+  transition: transform var(--transition-fast);
+}
+
+/* --------------------------------------------------------------------------
+   5. HERO SECTION (LAYOUT ASSIMÉTRICO 38 / 62 - ANCORADO À SANGRIA ESQUERDA)
+   -------------------------------------------------------------------------- */
+.hero-section {
+  padding: 11rem 0 6rem 0;
+  min-height: 90vh;
+  display: flex;
+  align-items: center;
+  position: relative;
+  border-bottom: 1px solid var(--color-graphite);
+  overflow: hidden;
+}
+
+/* Grid Widescreen Centralizado */
+.hero-centered-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.hero-content-centered {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.hero-badge {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  color: var(--color-brass);
+  background-color: rgba(176, 139, 79, 0.12);
+  padding: 0.35rem 0.85rem;
+  border: 1px solid var(--color-brass);
+  margin-bottom: 1.25rem;
+}
+
+.hero-title {
+  font-size: clamp(2.8rem, 5.2vw, 4.8rem);
+  color: var(--text-paper);
+  margin-bottom: 0.5rem;
+  text-shadow: 3px 3px 0px var(--shadow-color);
+}
+
+.hero-subtitle {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  letter-spacing: 0.22em;
+  color: var(--color-brass);
+  margin-bottom: 1.8rem;
+}
+
+.hero-description {
+  font-size: clamp(1.05rem, 0.5vw + 0.95rem, 1.2rem);
+  color: var(--text-muted);
+  max-width: 720px;
+  margin-bottom: 2.2rem;
+  line-height: 1.65;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+/* --------------------------------------------------------------------------
+   6. SEÇÃO SOBRE (GRID ASSIMÉTRICO 60 / 40 COM PILARES ESCALONADOS)
+   -------------------------------------------------------------------------- */
+.section {
+  padding: 7rem 0;
+  border-bottom: 1px solid var(--color-graphite);
+}
+
+.section-header-left {
+  text-align: left;
+  margin-bottom: 3.5rem;
+}
+
+.section-tag {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  color: var(--color-brass);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.section-title {
+  font-size: clamp(2.2rem, 4.2vw, 3.5rem);
+  color: var(--text-paper);
+}
+
+.sobre-asymmetric-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 4rem;
+  align-items: start;
+}
+
+.sobre-text-card {
+  background-color: var(--bg-card);
+  padding: 3rem;
+  border: 1px solid var(--color-graphite);
+  border-left: 5px solid var(--color-brass);
+  box-shadow: 8px 8px 0px var(--shadow-color);
+}
+
+.sobre-heading {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-brass);
+  margin-bottom: 1.25rem;
+  letter-spacing: 0.05em;
+}
+
+.sobre-stats {
+  display: flex;
+  gap: 3rem;
+  margin-top: 2.5rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--color-graphite);
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-num {
+  font-family: var(--font-display);
+  font-size: 2.8rem;
+  color: var(--color-brass);
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Disposição Escalonada / Diagonal dos Pilares na Direita */
+.pillars-staggered {
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+  position: relative;
+}
+
+.pillar-card {
+  background-color: var(--bg-card);
+  padding: 1.8rem 2rem;
+  border: 1px solid var(--color-graphite);
+  border-left-width: 5px;
+  box-shadow: 6px 6px 0px var(--shadow-color);
+  transition: transform var(--transition-normal);
+}
+
+/* Caixas dos Pilares Perfeitamente Alinhadas */
+.pillars-staggered .pillar-card {
+  margin-left: 0;
+}
+
+.pillar-card:hover {
+  transform: translateY(-3px);
+}
+
+.pillar-interface { border-left-color: var(--accent-interface); }
+.pillar-interface .pillar-accent-tag { color: var(--accent-interface); }
+
+.pillar-audiovisual { border-left-color: var(--accent-audiovisual); }
+.pillar-audiovisual .pillar-accent-tag { color: var(--accent-audiovisual); }
+
+.pillar-grafico { border-left-color: var(--accent-grafico); }
+.pillar-grafico .pillar-accent-tag { color: var(--accent-grafico); }
+
+.pillar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.pillar-icon {
+  font-size: 1.5rem;
+}
+
+.pillar-accent-tag {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+}
+
+.pillar-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-paper);
+  margin-bottom: 0.5rem;
+}
+
+.pillar-desc {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  margin-bottom: 0;
+}
+
+/* --------------------------------------------------------------------------
+   7. PROJETOS (CATÁLOGO WIDESCREEN ASSIMÉTRICO)
+   -------------------------------------------------------------------------- */
+.filter-bar-left {
+  display: flex;
+  justify-content: flex-start;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+  margin-bottom: 3.5rem;
+}
+
+.filter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 1.4rem;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+  background-color: var(--bg-card);
+  border: 1px solid var(--color-graphite);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: 3px 3px 0px var(--shadow-color);
+}
+
+.filter-indicator {
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+  border-radius: 50%;
+}
+
+.indicator-all { background-color: var(--color-brass); }
+.indicator-interface { background-color: var(--accent-interface); }
+.indicator-audiovisual { background-color: var(--accent-audiovisual); }
+.indicator-grafico { background-color: var(--accent-grafico); }
+
+.filter-btn:hover {
+  border-color: var(--color-brass);
+  color: var(--text-paper);
+}
+
+.filter-btn.active {
+  background-color: var(--bg-card-hover);
+  border-color: var(--text-paper);
+  color: var(--text-paper);
+  box-shadow: 4px 4px 0px var(--color-graphite);
+}
+
+/* Grid Widescreen de 3 Colunas com Espaçamento Generoso */
+.projects-grid-widescreen {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 460px));
+  gap: 2.5rem;
+}
+
+.project-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--color-graphite);
+  border-top-width: 4px;
+  box-shadow: 6px 6px 0px var(--shadow-color);
+  display: flex;
+  flex-direction: column;
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.project-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 10px 14px 0px var(--shadow-color);
+}
+
+/* Regras de Acento por Categoria */
+.cat-interface { border-top-color: var(--accent-interface); }
+.cat-interface .card-badge { background-color: var(--accent-interface); color: #FFF; }
+.cat-interface:hover .project-title { color: var(--accent-interface); }
+.cat-interface .btn-card-details { color: var(--accent-interface); }
+
+.cat-audiovisual { border-top-color: var(--accent-audiovisual); }
+.cat-audiovisual .card-badge { background-color: var(--accent-audiovisual); color: #FFF; }
+.cat-audiovisual:hover .project-title { color: var(--accent-audiovisual); }
+.cat-audiovisual .btn-card-details { color: var(--accent-audiovisual); }
+
+.cat-grafico { border-top-color: var(--accent-grafico); }
+.cat-grafico .card-badge { background-color: var(--accent-grafico); color: #FFF; }
+.cat-grafico:hover .project-title { color: var(--accent-grafico); }
+.cat-grafico .btn-card-details { color: var(--accent-grafico); }
+
+/* Detalhes Internos do Card */
+.card-image-wrapper {
+  height: 220px;
+  background-color: var(--bg-dark);
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid var(--color-graphite);
+}
+
+.card-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  padding: 0.25rem 0.6rem;
+  z-index: 10;
+}
+
+.mockup-preview {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-card-hover);
+  position: relative;
+}
+
+.interface-mockup .mockup-window-bar {
+  position: absolute;
+  top: 15px;
+  width: 80%;
+  height: 20px;
+  background-color: var(--bg-dark);
+  border-radius: 4px 4px 0 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-left: 10px;
+}
+
+.interface-mockup .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--color-graphite);
+}
+
+.interface-mockup .mockup-content {
+  width: 80%;
+  height: 110px;
+  margin-top: 20px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--color-graphite);
+  padding: 10px;
+}
+
+.ui-wire-header {
+  height: 12px;
+  width: 60%;
+  background-color: var(--accent-interface);
+  opacity: 0.8;
+  margin-bottom: 10px;
+}
+
+.ui-wire-body {
+  display: flex;
+  gap: 8px;
+}
+
+.ui-block {
+  height: 50px;
+  flex: 1;
+  background-color: var(--bg-dark);
+  border: 1px dashed var(--color-graphite);
+}
+
+.interface-mockup-alt .mobile-frame {
+  width: 100px;
+  height: 160px;
+  border: 3px solid var(--accent-interface);
+  border-radius: 12px;
+  background-color: var(--bg-dark);
+  position: relative;
+}
+
+.interface-mockup-alt .screen-notch {
+  width: 30px;
+  height: 4px;
+  background-color: var(--accent-interface);
+  margin: 6px auto 0 auto;
+}
+
+.audiovisual-mockup .play-overlay {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  border: 2px solid var(--accent-audiovisual);
+  background-color: rgba(75, 67, 104, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.audiovisual-mockup .play-icon {
+  color: var(--text-paper);
+  font-size: 1.2rem;
+  margin-left: 3px;
+}
+
+.video-timeline-graphic {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 8px;
+  background-color: var(--bg-dark);
+}
+
+.timeline-track {
+  width: 45%;
+  height: 100%;
+  background-color: var(--accent-audiovisual);
+}
+
+.motion-mockup .motion-frames {
+  display: flex;
+  gap: 8px;
+}
+
+.motion-mockup .frame {
+  width: 50px;
+  height: 70px;
+  border: 1px solid var(--accent-audiovisual);
+  background-color: var(--bg-dark);
+}
+
+.grafico-mockup .engraved-symbol-preview {
+  font-size: 3.5rem;
+  color: var(--accent-grafico);
+}
+
+.poster-mockup .poster-border {
+  width: 110px;
+  height: 150px;
+  border: 2px solid var(--accent-grafico);
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.poster-mockup .poster-title-line {
+  width: 80%;
+  height: 6px;
+  background-color: var(--accent-grafico);
+}
+
+.poster-mockup .poster-art {
+  font-size: 2rem;
+  color: var(--text-paper);
+}
+
+.card-info {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.project-year {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-brass);
+  letter-spacing: 0.1em;
+  margin-bottom: 0.25rem;
+}
+
+.project-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.6rem;
+  transition: color var(--transition-fast);
+}
+
+.project-summary {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  margin-bottom: 1.2rem;
+  flex-grow: 1;
+}
+
+.card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1.2rem;
+}
+
+.tag {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  padding: 0.2rem 0.5rem;
+  background-color: var(--bg-dark);
+  border: 1px solid var(--color-graphite);
+  color: var(--text-paper);
+}
+
+.btn-card-details {
+  background: none;
+  border: none;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  text-decoration: none;
+}
+
+/* --------------------------------------------------------------------------
+   8. SEÇÃO CONTATO (GRID ASSIMÉTRICO 35 / 65)
+   -------------------------------------------------------------------------- */
+.contato-asymmetric-grid {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 4rem;
+}
+
+.contato-info-card,
+.contato-form-card {
+  background-color: var(--bg-card);
+  padding: 2.8rem;
+  border: 1px solid var(--color-graphite);
+  box-shadow: 8px 8px 0px var(--shadow-color);
+}
+
+.contato-heading {
+  font-size: 1.6rem;
+  color: var(--color-brass);
+  margin-bottom: 1rem;
+}
+
+.contact-details {
+  margin: 2rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.contact-detail-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--color-brass);
+  margin-bottom: 0.2rem;
+}
+
+.detail-value {
+  font-size: 1rem;
+  color: var(--text-paper);
+}
+
+a.detail-value:hover {
+  color: var(--color-brass);
+  text-decoration: underline;
+}
+
+.social-links-wrapper {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-graphite);
+}
+
+.social-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  display: block;
+  margin-bottom: 0.8rem;
+}
+
+.social-buttons {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.social-btn {
+  padding: 0.4rem 0.9rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: 1px solid var(--color-graphite);
+  background-color: var(--bg-dark);
+  color: var(--text-paper);
+}
+
+.social-btn:hover {
+  border-color: var(--color-brass);
+  color: var(--color-brass);
+}
+
+.form-group {
+  margin-bottom: 1.4rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--text-paper);
+  margin-bottom: 0.4rem;
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  background-color: var(--bg-dark);
+  border: 1px solid var(--color-graphite);
+  color: var(--text-paper);
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  border-color: var(--color-brass);
+}
+
+.form-feedback {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  font-size: 0.9rem;
+  display: none;
+  border: 1px solid var(--color-brass);
+  background-color: rgba(176, 139, 79, 0.12);
+  color: var(--text-paper);
+}
+
+/* --------------------------------------------------------------------------
+   9. RODAPÉ (FOOTER WIDESCREEN)
+   -------------------------------------------------------------------------- */
+.site-footer {
+  padding: 3.5rem 0;
+  background-color: var(--bg-card);
+  border-top: 2px solid var(--color-graphite);
+}
+
+.footer-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.footer-left {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.footer-crest {
+  width: 42px;
+  height: 42px;
+}
+
+.footer-brand-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-brand-name {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--color-brass);
+}
+
+.footer-copy {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.footer-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.footer-motto {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--color-graphite);
+}
+
+.back-to-top {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid var(--color-graphite);
+  color: var(--text-paper);
+}
+
+.back-to-top:hover {
+  border-color: var(--color-brass);
+  color: var(--color-brass);
+}
+
+/* --------------------------------------------------------------------------
+   10. MODAL DE DETALHES DO PROJETO
+   -------------------------------------------------------------------------- */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(10, 11, 14, 0.88);
+  backdrop-filter: blur(6px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--transition-normal), visibility var(--transition-normal);
+}
+
+.modal-backdrop.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-container {
+  background-color: var(--bg-card);
+  border: 2px solid var(--color-brass);
+  width: 100%;
+  max-width: 750px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 2.5rem;
+  position: relative;
+  box-shadow: 10px 10px 0px var(--shadow-color);
+  transform: scale(0.95);
+  transition: transform var(--transition-normal);
+}
+
+.modal-backdrop.active .modal-container {
+  transform: scale(1);
+}
+
+.modal-close {
+  position: absolute;
+  top: 1.2rem;
+  right: 1.2rem;
+  background: none;
+  border: 1px solid var(--color-graphite);
+  color: var(--text-paper);
+  font-size: 1.5rem;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color var(--transition-fast);
+}
+
+.modal-close:hover {
+  border-color: var(--color-brass);
+  color: var(--color-brass);
+}
+
+.modal-category-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  padding: 0.25rem 0.6rem;
+  color: #FFF;
+  margin-bottom: 0.5rem;
+}
+
+.modal-title {
+  font-size: 2rem;
+  margin-bottom: 0.25rem;
+}
+
+.modal-meta {
+  font-size: 0.85rem;
+  color: var(--color-brass);
+  display: block;
+  margin-bottom: 1.5rem;
+}
+
+.modal-preview-box {
+  width: 100%;
+  height: 240px;
+  background-color: var(--bg-dark);
+  border: 1px solid var(--color-graphite);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-subheading {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-brass);
+  margin: 1.2rem 0 0.4rem 0;
+}
+
+.modal-tags {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
+.modal-footer {
+  margin-top: 2rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--color-graphite);
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* --------------------------------------------------------------------------
+   11. ADAPTAÇÕES DE VIEWPORT (RESPONSIVIDADE SEGUNDA ETAPA)
+   -------------------------------------------------------------------------- */
+@media (max-width: 1200px) {
+  .widescreen-canvas {
+    padding: 0 2rem;
+  }
+
+  .hero-asymmetric-grid {
+    grid-template-columns: 340px 1fr;
+    gap: 3rem;
+  }
+
+  .sobre-asymmetric-grid {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  .pillars-staggered .pillar-card:nth-child(2),
+  .pillars-staggered .pillar-card:nth-child(3) {
+    margin-left: 0;
+  }
+
+  .projects-grid-widescreen {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .contato-asymmetric-grid {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .menu-toggle {
+    display: flex;
+  }
+
+  .nav-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: var(--bg-card);
+    border-bottom: 2px solid var(--color-graphite);
+    flex-direction: column;
+    padding: 1.5rem;
+    gap: 1.2rem;
+    clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+    transition: clip-path var(--transition-normal);
+  }
+
+  .nav-menu.active {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  }
+
+  .hero-asymmetric-grid {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .crest-frame-asymmetric {
+    max-width: 240px;
+    margin: 0 auto;
+  }
+
+  .hero-actions {
+    justify-content: center;
+  }
+
+  .projects-grid-widescreen {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-inner {
+    flex-direction: column;
+    text-align: center;
+  }
+}

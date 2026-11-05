@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Briefing de Projeto &bull; G. Lovato Roseira</title>
+
+  <!-- Google Fonts: Metal Mania (Títulos) & Barlow (Corpo) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700&family=Metal+Mania&display=swap" rel="stylesheet">
+
+  <!-- Early Theme Initialization -->
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    })();
+  </script>
+
+  <link rel="stylesheet" href="briefing.css">
+
+  <!-- Firebase JS SDK (CDN Compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+</head>
+<body data-page="detalhe">
+
+  <!-- Cabeçalho (Impresso com o PDF) -->
+  <header class="briefing-header">
+    <div class="briefing-header-inner">
+      <div class="brand-badge">
+        <img src="../assets/wolf-crest.svg" alt="Brasão de Lobo" class="brand-crest">
+        <span class="brand-title">G. LOVATO ROSEIRA</span>
+      </div>
+      <div class="header-user-nav">
+        <button id="themeToggle" class="theme-toggle-btn print-hide-btn" aria-label="Alternar Tema Claro/Escuro" title="Alternar Tema">☀️</button>
+        <a href="painel.html" class="btn-doc btn-doc-ghost print-hide-btn" style="padding: 0.4rem 0.8rem; font-size: 0.75rem;">&larr; PAINEL DE BRIEFINGS</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="doc-container">
+    
+    <!-- Ações Superiores (Ocultas ao Imprimir PDF) -->
+    <div class="print-hide-btn" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+      <a href="painel.html" class="btn-doc btn-doc-ghost">
+        &larr; VOLTAR AO PAINEL
+      </a>
+      <button id="downloadPdfBtn" class="btn-doc btn-doc-primary">
+        🖨️ BAIXAR PDF / IMPRIMIR
+      </button>
+    </div>
+
+    <!-- Card de Documento Impresso -->
+    <article class="document-card" id="documentCard">
+      <div class="document-header-block">
+        <span class="doc-category-badge" id="docCategoryBadge">CARREGANDO...</span>
+        <h1 class="doc-title" id="docTitle">Carregando conteúdo do briefing...</h1>
+        
+        <div class="doc-meta-row">
+          <div class="doc-meta-item">
+            <span>DATA DE CRIAÇÃO:</span>
+            <strong id="docDate">--/--/----</strong>
+          </div>
+          <div class="doc-meta-item">
+            <span>CÓDIGO DO DOCUMENTO:</span>
+            <strong id="docId">#---</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Conteúdo formatado do Briefing -->
+      <div class="doc-body-content" id="docContent">
+        <p>Buscando especificações do projeto no banco de dados...</p>
+      </div>
+
+      <!-- Caixa de Materiais de Apoio -->
+      <div class="doc-materials-box" id="docMaterialsBox" style="display: none;">
+        <div class="materials-title">MATERIAL DE APOIO E REFERÊNCIAS EXTERNAS</div>
+        <a href="#" id="docMaterialsLink" target="_blank" rel="noopener" class="materials-link">
+          https://link-de-material-exemplo.com
+        </a>
+      </div>
+    </article>
+
+  </main>
+
+  <script src="firebase-config.js"></script>
+  <script src="briefing.js"></script>
+</body>
+</html>

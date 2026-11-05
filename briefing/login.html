@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Acesso Restrito &bull; Briefings G. Lovato Roseira</title>
+  
+  <!-- Google Fonts: Metal Mania (Títulos) & Barlow (Corpo) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700&family=Metal+Mania&display=swap" rel="stylesheet">
+  
+  <!-- Early Theme Initialization -->
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    })();
+  </script>
+
+  <link rel="stylesheet" href="briefing.css">
+
+  <!-- Firebase JS SDK (CDN Compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+  <header class="briefing-header">
+    <div class="briefing-header-inner">
+      <div class="brand-badge">
+        <img src="../assets/wolf-crest.svg" alt="Brasão de Lobo" class="brand-crest">
+        <span class="brand-title">G. LOVATO ROSEIRA</span>
+      </div>
+      <div class="header-user-nav">
+        <span class="user-tag">MÓDULO DE BRIEFINGS</span>
+        <button id="themeToggle" class="theme-toggle-btn" aria-label="Alternar Tema Claro/Escuro" title="Alternar Tema">☀️</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="login-card-wrapper">
+    <div class="login-card">
+      <div class="login-logo">
+        <img src="../assets/wolf-crest.svg" alt="Brasão de Lobo" class="login-crest-img">
+        <h1 class="modal-doc-title" style="font-size: 1.8rem; margin-top: 0.5rem;">AUTENTICAÇÃO</h1>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem;">Acesso exclusivo à gestão de briefings</p>
+      </div>
+
+      <div id="loginFeedback" class="feedback-msg feedback-error"></div>
+
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="loginEmail" class="form-label">ENDEREÇO DE EMAIL</label>
+          <input type="email" id="loginEmail" class="form-control" placeholder="exemplo@lovatoroseira.com" required>
+        </div>
+
+        <div class="form-group">
+          <label for="loginPassword" class="form-label">SENHA DE ACESSO</label>
+          <input type="password" id="loginPassword" class="form-control" placeholder="••••••••" required>
+        </div>
+
+        <button type="submit" class="btn-doc btn-doc-primary" style="width: 100%; margin-top: 1rem;">
+          ENTRAR NO PAINEL &rarr;
+        </button>
+      </form>
+    </div>
+  </main>
+
+  <script src="firebase-config.js"></script>
+  <script src="briefing.js"></script>
+</body>
+</html>

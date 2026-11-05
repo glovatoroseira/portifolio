@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Formulário de Briefing &bull; G. Lovato Roseira</title>
+
+  <!-- Google Fonts: Metal Mania (Títulos) & Barlow (Corpo) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700&family=Metal+Mania&display=swap" rel="stylesheet">
+
+  <!-- Early Theme Initialization -->
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    })();
+  </script>
+
+  <link rel="stylesheet" href="../briefing.css">
+
+  <!-- Firebase JS SDK (CDN Compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+</head>
+<body data-page="formulario">
+
+  <!-- Cabeçalho Institucional Simples -->
+  <header class="briefing-header">
+    <div class="briefing-header-inner">
+      <div class="brand-badge">
+        <img src="../../assets/wolf-crest.svg" alt="Brasão de Lobo" class="brand-crest">
+        <span class="brand-title">G. LOVATO ROSEIRA</span>
+      </div>
+      <div class="header-user-nav">
+        <span class="user-tag">DOSSIÊ DE PROJETO</span>
+        <button id="themeToggle" class="theme-toggle-btn" aria-label="Alternar Tema Claro/Escuro" title="Alternar Tema">☀️</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="client-form-container">
+
+    <!-- WRAPPER COM SOMBRA PROJETADA DA FOLHA IRREGULAR -->
+    <div class="documento-folha-wrapper">
+
+      <!-- FOLHA DE PERGAMINHO / DOSSIÊ FÍSICO (OBJETO SOBRE MESA) -->
+      <div class="documento-folha dossier-paper-sheet">
+
+        <!-- BARRA DE PROGRESSO DO DOSSIÊ -->
+        <div class="progress-container" id="progressContainer">
+          <div class="progress-info">
+            <span id="stepCounterText">ETAPA 1 DE 3</span>
+            <span id="stepPercentText">33%</span>
+          </div>
+          <div class="progress-bar-track">
+            <div class="progress-bar-fill" id="progressBarFill"></div>
+          </div>
+        </div>
+
+      <!-- FORMULÁRIO MULTI-ETAPAS -->
+      <form id="clientBriefingForm" onsubmit="return false;">
+        
+        <!-- ETAPA 1: ESCOLHA DA CATEGORIA -->
+        <section class="form-step-section active" id="stepCategory">
+          <div class="document-header-block" style="border-bottom: none; margin-bottom: 0; padding-bottom: 0;">
+            <span class="doc-category-badge">INÍCIO DO BRIEFING</span>
+            <h1 class="form-step-title" style="font-size: 2.2rem; margin-top: 0.5rem;">QUAL O TIPO DO SEU PROJETO?</h1>
+            <p style="font-size: 1rem; margin-top: 0.5rem;">
+              Selecione uma das opções abaixo para abrir o formulário personalizado.
+            </p>
+          </div>
+
+          <div class="category-cards-grid">
+            
+            <div class="category-select-card card-grafico" data-category-choice="grafico">
+              <h3 class="cat-card-title">IDENTIDADE VISUAL</h3>
+              <p class="cat-card-desc">Criação de marcas, logotipos, manuais, embalagens e materiais gráficos.</p>
+            </div>
+
+            <div class="category-select-card card-audiovisual" data-category-choice="audiovisual">
+              <h3 class="cat-card-title">PRODUÇÃO AUDIOVISUAL</h3>
+              <p class="cat-card-desc">Edição de vídeo, teasers, vídeoclipes, cor e animação gráfica.</p>
+            </div>
+
+            <div class="category-select-card card-interface" data-category-choice="interface">
+              <h3 class="cat-card-title">INTERFACE (APP OU SITE)</h3>
+              <p class="cat-card-desc">Design de sistemas digitais, aplicativos móveis e websites responsivos.</p>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ETAPA 2: QUESTIONÁRIO ESPECÍFICO -->
+        <section class="form-step-section" id="stepQuestions" style="display: none;">
+          
+          <!-- BLOCO IDENTIDADE VISUAL -->
+          <div class="category-fields-block" id="blockGrafico" style="display: none;">
+            <div class="document-header-block">
+              <span class="doc-category-badge" style="background-color: rgba(31, 92, 82, 0.15); color: #1A1510; border: 1px solid var(--accent-grafico);">IDENTIDADE VISUAL</span>
+              <h2 class="form-step-title" style="font-size: 1.8rem;">DETALHES DA MARCA &amp; ESTÉTICA</h2>
+            </div>
+
+            <div class="form-group">
+              <label for="gv_nome" class="form-label">1. NOME DO PROJETO OU MARCA (SE HOUVER)</label>
+              <input type="text" id="gv_nome" class="notebook-line-input" placeholder="Ex: Vespera Ateliê">
+            </div>
+
+            <div class="form-group">
+              <label for="gv_area" class="form-label">2. ÁREA DE ATUAÇÃO *</label>
+              <input type="text" id="gv_area" class="notebook-line-input" placeholder="Ex: Editora independente de livros e arte">
+            </div>
+
+            <div class="form-group">
+              <label for="gv_publico" class="form-label">3. PÚBLICO-ALVO *</label>
+              <input type="text" id="gv_publico" class="notebook-line-input" placeholder="Ex: Leitores e colecionadores de arte com idade entre 20 e 45 anos">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">4. JÁ EXISTE ALGUM MATERIAL ANTERIOR (LOGO, MANUAL DE MARCA)?</label>
+              <div class="options-group">
+                <label class="option-box">
+                  <input type="radio" name="gv_material_previo" value="nao" checked onclick="toggleConditional('gv_material_extra', false)">
+                  <span class="option-box-text">Não, estamos começando do zero</span>
+                </label>
+                <label class="option-box">
+                  <input type="radio" name="gv_material_previo" value="sim" onclick="toggleConditional('gv_material_extra', true)">
+                  <span class="option-box-text">Sim, já temos material existente</span>
+                </label>
+              </div>
+              <div class="conditional-field" id="gv_material_extra">
+                <label for="gv_material_link" class="form-label">DESCREVA OU INSIRA O LINK DO MATERIAL EXISTENTE:</label>
+                <input type="text" id="gv_material_link" class="notebook-line-input" placeholder="Link do Google Drive, Figma ou descrição breve">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="gv_ref_gosta" class="form-label">5. REFERÊNCIAS VISUAIS QUE GOSTA (ACEITA LINKS)</label>
+              <textarea id="gv_ref_gosta" class="notebook-line-textarea" rows="3" placeholder="Insira links de imagens, pastas do Pinterest ou marcas que admira..."></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="gv_ref_odeia" class="form-label">6. REFERÊNCIAS QUE DEFINITIVAMENTE NÃO QUER</label>
+              <textarea id="gv_ref_odeia" class="notebook-line-textarea" rows="3" placeholder="Descreva cores, estilos ou elementos visuais que devemos evitar a todo custo..."></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">7. APLICAÇÕES NECESSÁRIAS (SELECIONE TODAS QUE SE APLICAM)</label>
+              <div class="options-group">
+                <label class="option-box"><input type="checkbox" name="gv_app" value="Cartão de visita"><span class="option-box-text">Cartão de visita</span></label>
+                <label class="option-box"><input type="checkbox" name="gv_app" value="Redes sociais"><span class="option-box-text">Redes sociais (posts, avatares, banners)</span></label>
+                <label class="option-box"><input type="checkbox" name="gv_app" value="Embalagem"><span class="option-box-text">Embalagem ou rótulo</span></label>
+                <label class="option-box"><input type="checkbox" name="gv_app" value="Papelaria"><span class="option-box-text">Papelaria (papel timbrado, envelopes)</span></label>
+                <label class="option-box"><input type="checkbox" name="gv_app" value="Uniforme"><span class="option-box-text">Uniforme ou camiseta</span></label>
+                <label class="option-box"><input type="checkbox" name="gv_app" value="Outro" id="gv_app_outro_chk" onclick="toggleConditional('gv_app_outro_box', this.checked)"><span class="option-box-text">Outro</span></label>
+              </div>
+              <div class="conditional-field" id="gv_app_outro_box">
+                <input type="text" id="gv_app_outro_txt" class="notebook-line-input" placeholder="Especifique a outra aplicação necessária">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">8. DIREÇÃO DE CORES</label>
+              <p style="font-size: 0.88rem; margin-top: -0.25rem; margin-bottom: 1rem;">
+                Você tem cores em mente para este projeto? Selecione as que gosta e as que não gosta, além de descrever o que procura.<br>
+                <em>Não se preocupe em acertar o tom exato, isso é só uma direção para o processo criativo.</em>
+              </p>
+
+              <div class="color-picker-box">
+                <!-- CORES QUE GOSTA -->
+                <div class="color-sub-group">
+                  <label class="form-label" style="font-size: 0.88rem;">CORES QUE GOSTA</label>
+                  <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                    <button type="button" class="btn-add-color" onclick="triggerColorPicker('id_color_input_gosta')">+ Adicionar cor</button>
+                    <input type="color" id="id_color_input_gosta" style="display:none;" value="#2C5F7C" onchange="addColorChip('grafico_gosta', this.value)">
+                  </div>
+                  <div id="id_chips_gosta" class="color-chips-container"></div>
+                  <input type="text" id="id_cores_gosta_texto" class="notebook-line-input" style="margin-top: 0.5rem;" placeholder="Descreva em poucas palavras (ex: tons terrosos, cores vibrantes, paleta monocromática)">
+                </div>
+
+                <!-- CORES QUE NÃO QUER -->
+                <div class="color-sub-group" style="margin-top: 1.25rem;">
+                  <label class="form-label" style="font-size: 0.88rem;">CORES QUE NÃO QUER</label>
+                  <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                    <button type="button" class="btn-add-color" onclick="triggerColorPicker('id_color_input_nao_quer')">+ Adicionar cor</button>
+                    <input type="color" id="id_color_input_nao_quer" style="display:none;" value="#8B0000" onchange="addColorChip('grafico_nao_quer', this.value)">
+                  </div>
+                  <div id="id_chips_nao_quer" class="color-chips-container"></div>
+                  <input type="text" id="id_cores_nao_quer_texto" class="notebook-line-input" style="margin-top: 0.5rem;" placeholder="Alguma cor ou combinação que você quer evitar?">
+                </div>
+              </div>
+            </div>
+
+            <div class="torn-paper-divider"></div>
+
+            <!-- ESCALAS DE PERSONALIDADE (RÉGUA ENTALHADA 1 A 5) -->
+            <div class="form-group">
+              <label class="form-label" style="font-size: 1rem; margin-bottom: 1rem;">
+                9. PERSONALIDADE DA MARCA
+              </label>
+
+              <!-- Escala 1 -->
+              <div class="ruler-scale-gauge">
+                <div class="ruler-ticks"></div>
+                <div class="scale-header">
+                  <span class="scale-label-left">CLÁSSICO (1)</span>
+                  <span class="scale-label-right">MODERNO (5)</span>
+                </div>
+                <div class="scale-buttons-row">
+                  <div class="scale-btn-item"><input type="radio" name="scale_gv_1" id="sgv1_1" value="1"><label for="sgv1_1" class="scale-btn-label">1</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_gv_1" id="sgv1_2" value="2"><label for="sgv1_2" class="scale-btn-label">2</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_gv_1" id="sgv1_3" value="3" checked><label for="sgv1_3" class="scale-btn-label">3</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_gv_1" id="sgv1_4" value="4"><label for="sgv1_4" class="scale-btn-label">4</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_gv_1" id="sgv1_5" value="5"><label for="sgv1_5" class="scale-btn-label">5</label></div>
+                </div>
+              </div>
+
+              <!-- Escala 2 -->
+              <div class="ruler-scale-gauge">
+                <div class="ruler-ticks"></div>
+                <div class="scale-header">
+                  <span class="scale-label-left">SÉRIO (1)</span>
+                  <span class="scale-label-right">DESCONTRAÍDO (5)</span>
+                </div>
+                <div class="scale-buttons-row">
+                  <div class="scale-btn-item"><input type="radio" name="scale_gv_2" id="sgv2_1" value="1"><label for="sgv2_1" class="scale-btn-label">1</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_gv_2" id="sgv2_2" value="2"><label for="sgv2_2" class="scale-btn-label">2</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_gv_2" id="sgv2_3" value="3" checked><label for="sgv2_3" class="scale-btn-label">3</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_gv_2" id="sgv2_4" value="4"><label for="sgv2_4" class="scale-btn-label">4</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_gv_2" id="sgv2_5" value="5"><label for="sgv2_5" class="scale-btn-label">5</label></div>
+                </div>
+              </div>
+
+              <!-- Escala 3 -->
+              <div class="ruler-scale-gauge">
+                <div class="ruler-ticks"></div>
+                <div class="scale-header">
+                  <span class="scale-label-left">MINIMALISTA (1)</span>
+                  <span class="scale-label-right">ELABORADO (5)</span>
+                </div>
+                <div class="scale-buttons-row">
+                  <div class="scale-btn-item"><input type="radio" name="scale_gv_3" id="sgv3_1" value="1"><label for="sgv3_1" class="scale-btn-label">1</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_gv_3" id="sgv3_2" value="2"><label for="sgv3_2" class="scale-btn-label">2</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_gv_3" id="sgv3_3" value="3" checked><label for="sgv3_3" class="scale-btn-label">3</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_gv_3" id="sgv3_4" value="4"><label for="sgv3_4" class="scale-btn-label">4</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_gv_3" id="sgv3_5" value="5"><label for="sgv3_5" class="scale-btn-label">5</label></div>
+                </div>
+              </div>
+
+              <!-- Escala 4 -->
+              <div class="ruler-scale-gauge">
+                <div class="ruler-ticks"></div>
+                <div class="scale-header">
+                  <span class="scale-label-left">DISCRETO (1)</span>
+                  <span class="scale-label-right">OUSADO (5)</span>
+                </div>
+                <div class="scale-buttons-row">
+                  <div class="scale-btn-item"><input type="radio" name="scale_gv_4" id="sgv4_1" value="1"><label for="sgv4_1" class="scale-btn-label">1</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_gv_4" id="sgv4_2" value="2"><label for="sgv4_2" class="scale-btn-label">2</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_gv_4" id="sgv4_3" value="3" checked><label for="sgv4_3" class="scale-btn-label">3</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_gv_4" id="sgv4_4" value="4"><label for="sgv4_4" class="scale-btn-label">4</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_gv_4" id="sgv4_5" value="5"><label for="sgv4_5" class="scale-btn-label">5</label></div>
+                </div>
+              </div>
+
+              <!-- Escala 5 -->
+              <div class="ruler-scale-gauge">
+                <div class="ruler-ticks"></div>
+                <div class="scale-header">
+                  <span class="scale-label-left">TRADICIONAL (1)</span>
+                  <span class="scale-label-right">INOVADOR (5)</span>
+                </div>
+                <div class="scale-buttons-row">
+                  <div class="scale-btn-item"><input type="radio" name="scale_gv_5" id="sgv5_1" value="1"><label for="sgv5_1" class="scale-btn-label">1</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_gv_5" id="sgv5_2" value="2"><label for="sgv5_2" class="scale-btn-label">2</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_gv_5" id="sgv5_3" value="3" checked><label for="sgv5_3" class="scale-btn-label">3</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_gv_5" id="sgv5_4" value="4"><label for="sgv5_4" class="scale-btn-label">4</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_gv_5" id="sgv5_5" value="5"><label for="sgv5_5" class="scale-btn-label">5</label></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- BLOCO PRODUÇÃO AUDIOVISUAL -->
+          <div class="category-fields-block" id="blockAudiovisual" style="display: none;">
+            <div class="document-header-block">
+              <span class="doc-category-badge" style="background-color: rgba(75, 67, 104, 0.15); color: #1A1510; border: 1px solid var(--accent-audiovisual);">PRODUÇÃO AUDIOVISUAL</span>
+              <h2 class="form-step-title" style="font-size: 1.8rem;">ESPECIFICAÇÕES DO VÍDEO</h2>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">1. TIPO DE PEÇA *</label>
+              <div class="options-group">
+                <label class="option-box"><input type="radio" name="av_tipo" value="Institucional" checked><span class="option-box-text">Institucional</span></label>
+                <label class="option-box"><input type="radio" name="av_tipo" value="Trailer"><span class="option-box-text">Trailer ou Teaser</span></label>
+                <label class="option-box"><input type="radio" name="av_tipo" value="Videoclipe"><span class="option-box-text">Videoclipe</span></label>
+                <label class="option-box"><input type="radio" name="av_tipo" value="Evento"><span class="option-box-text">Cobertura de Evento</span></label>
+                <label class="option-box"><input type="radio" name="av_tipo" value="Outro" onclick="toggleConditional('av_tipo_outro_box', true)"><span class="option-box-text">Outro</span></label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">2. DURAÇÃO ESTIMADA *</label>
+              <div class="options-group">
+                <label class="option-box"><input type="radio" name="av_duracao" value="até 1 min" checked><span class="option-box-text">Até 1 minuto</span></label>
+                <label class="option-box"><input type="radio" name="av_duracao" value="1 a 3 min"><span class="option-box-text">1 a 3 minutos</span></label>
+                <label class="option-box"><input type="radio" name="av_duracao" value="3 a 5 min"><span class="option-box-text">3 a 5 minutos</span></label>
+                <label class="option-box"><input type="radio" name="av_duracao" value="mais de 5 min"><span class="option-box-text">Mais de 5 minutos</span></label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="av_objetivo" class="form-label">3. OBJETIVO DO VÍDEO *</label>
+              <textarea id="av_objetivo" class="notebook-line-textarea" rows="3" placeholder="O que este vídeo deve comunicar ou qual impacto deve causar no espectador?"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="av_publico" class="form-label">4. PÚBLICO-ALVO *</label>
+              <input type="text" id="av_publico" class="notebook-line-input" placeholder="Quem assistirá ao vídeo?">
+            </div>
+
+            <div class="form-group">
+              <label for="av_ref" class="form-label">5. REFERÊNCIAS DE ESTILO OU VÍDEOS QUE GOSTA (LINKS)</label>
+              <textarea id="av_ref" class="notebook-line-textarea" rows="3" placeholder="Cole links do Vimeo, YouTube ou descreva cenas de referência..."></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">6. JÁ TEM ROTEIRO PRONTO OU PRECISA SER CRIADO?</label>
+              <div class="options-group">
+                <label class="option-box"><input type="radio" name="av_roteiro" value="Já tenho roteiro" checked><span class="option-box-text">Já tenho roteiro pronto</span></label>
+                <label class="option-box"><input type="radio" name="av_roteiro" value="Preciso que seja criado"><span class="option-box-text">Preciso que seja criado do zero</span></label>
+                <label class="option-box"><input type="radio" name="av_roteiro" value="Tenho uma ideia mas não roteiro fechado"><span class="option-box-text">Tenho uma ideia mas não roteiro fechado</span></label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">7. RECURSOS DISPONÍVEIS (SELECIONE OS QUE JÁ POSSUI)</label>
+              <div class="options-group">
+                <label class="option-box"><input type="checkbox" name="av_recursos" value="Imagens/vídeos próprios"><span class="option-box-text">Imagens/vídeos próprios</span></label>
+                <label class="option-box"><input type="checkbox" name="av_recursos" value="Atores"><span class="option-box-text">Atores ou apresentadores</span></label>
+                <label class="option-box"><input type="checkbox" name="av_recursos" value="Locação definida"><span class="option-box-text">Locação definida</span></label>
+                <label class="option-box"><input type="checkbox" name="av_recursos" value="Nenhum ainda"><span class="option-box-text">Nenhum ainda</span></label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">8. TRILHA SONORA</label>
+              <div class="options-group">
+                <label class="option-box"><input type="radio" name="av_trilha" value="Já tenho" checked><span class="option-box-text">Já tenho a música/áudio</span></label>
+                <label class="option-box"><input type="radio" name="av_trilha" value="Precisa ser composta"><span class="option-box-text">Precisa ser selecionada ou composta</span></label>
+                <label class="option-box"><input type="radio" name="av_trilha" value="Indiferente"><span class="option-box-text">Indiferente</span></label>
+              </div>
+            </div>
+
+            <div class="torn-paper-divider"></div>
+
+            <!-- ESCALAS AUDIOVISUAL (RÉGUA ENTALHADA 1 A 5) -->
+            <div class="form-group">
+              <label class="form-label" style="font-size: 1rem; margin-bottom: 1rem;">
+                9. TOM E ATMOSFERA DESEJADA (MEDIDOR ENTALHADO DE 1 A 5)
+              </label>
+
+              <div class="ruler-scale-gauge">
+                <div class="ruler-ticks"></div>
+                <div class="scale-header"><span class="scale-label-left">SÉRIO (1)</span><span class="scale-label-right">DIVERTIDO (5)</span></div>
+                <div class="scale-buttons-row">
+                  <div class="scale-btn-item"><input type="radio" name="scale_av_1" id="sav1_1" value="1"><label for="sav1_1" class="scale-btn-label">1</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_av_1" id="sav1_2" value="2"><label for="sav1_2" class="scale-btn-label">2</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_av_1" id="sav1_3" value="3" checked><label for="sav1_3" class="scale-btn-label">3</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_av_1" id="sav1_4" value="4"><label for="sav1_4" class="scale-btn-label">4</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_av_1" id="sav1_5" value="5"><label for="sav1_5" class="scale-btn-label">5</label></div>
+                </div>
+              </div>
+
+              <div class="ruler-scale-gauge">
+                <div class="ruler-ticks"></div>
+                <div class="scale-header"><span class="scale-label-left">REALISTA (1)</span><span class="scale-label-right">ESTILIZADO (5)</span></div>
+                <div class="scale-buttons-row">
+                  <div class="scale-btn-item"><input type="radio" name="scale_av_2" id="sav2_1" value="1"><label for="sav2_1" class="scale-btn-label">1</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_av_2" id="sav2_2" value="2"><label for="sav2_2" class="scale-btn-label">2</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_av_2" id="sav2_3" value="3" checked><label for="sav2_3" class="scale-btn-label">3</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_av_2" id="sav2_4" value="4"><label for="sav2_4" class="scale-btn-label">4</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_av_2" id="sav2_5" value="5"><label for="sav2_5" class="scale-btn-label">5</label></div>
+                </div>
+              </div>
+
+              <div class="ruler-scale-gauge">
+                <div class="ruler-ticks"></div>
+                <div class="scale-header"><span class="scale-label-left">CALMO (1)</span><span class="scale-label-right">DINÂMICO (5)</span></div>
+                <div class="scale-buttons-row">
+                  <div class="scale-btn-item"><input type="radio" name="scale_av_3" id="sav3_1" value="1"><label for="sav3_1" class="scale-btn-label">1</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_av_3" id="sav3_2" value="2"><label for="sav3_2" class="scale-btn-label">2</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_av_3" id="sav3_3" value="3" checked><label for="sav3_3" class="scale-btn-label">3</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_av_3" id="sav3_4" value="4"><label for="sav3_4" class="scale-btn-label">4</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_av_3" id="sav3_5" value="5"><label for="sav3_5" class="scale-btn-label">5</label></div>
+                </div>
+              </div>
+
+              <div class="ruler-scale-gauge">
+                <div class="ruler-ticks"></div>
+                <div class="scale-header"><span class="scale-label-left">SOMBRIO (1)</span><span class="scale-label-right">LUMINOSO (5)</span></div>
+                <div class="scale-buttons-row">
+                  <div class="scale-btn-item"><input type="radio" name="scale_av_4" id="sav4_1" value="1"><label for="sav4_1" class="scale-btn-label">1</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_av_4" id="sav4_2" value="2"><label for="sav4_2" class="scale-btn-label">2</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_av_4" id="sav4_3" value="3" checked><label for="sav4_3" class="scale-btn-label">3</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_av_4" id="sav4_4" value="4"><label for="sav4_4" class="scale-btn-label">4</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_av_4" id="sav4_5" value="5"><label for="sav4_5" class="scale-btn-label">5</label></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- BLOCO INTERFACE (UI/UX) -->
+          <div class="category-fields-block" id="blockInterface" style="display: none;">
+            <div class="document-header-block">
+              <span class="doc-category-badge" style="background-color: rgba(44, 95, 124, 0.15); color: #1A1510; border: 1px solid var(--accent-interface);">INTERFACE (UI/UX)</span>
+              <h2 class="form-step-title" style="font-size: 1.8rem;">ESTRUTURA &amp; REQUISITOS DO SISTEMA</h2>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">1. TIPO DE PROJETO *</label>
+              <div class="options-group">
+                <label class="option-box"><input type="radio" name="ui_tipo" value="Site" checked><span class="option-box-text">Website Institucional ou Landing Page</span></label>
+                <label class="option-box"><input type="radio" name="ui_tipo" value="App"><span class="option-box-text">Aplicativo Móvel</span></label>
+                <label class="option-box"><input type="radio" name="ui_tipo" value="Sistema"><span class="option-box-text">Sistema / Plataforma Web</span></label>
+                <label class="option-box"><input type="radio" name="ui_tipo" value="Outro"><span class="option-box-text">Outro</span></label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">2. PLATAFORMA *</label>
+              <div class="options-group">
+                <label class="option-box"><input type="radio" name="ui_plat" value="Mobile" checked><span class="option-box-text">Mobile (Celular / Tablet)</span></label>
+                <label class="option-box"><input type="radio" name="ui_plat" value="Desktop"><span class="option-box-text">Desktop (Navegador Computador)</span></label>
+                <label class="option-box"><input type="radio" name="ui_plat" value="Ambos"><span class="option-box-text">Ambos (Layout Responsivo)</span></label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="ui_funcs" class="form-label">3. FUNCIONALIDADES PRINCIPAIS *</label>
+              <textarea id="ui_funcs" class="notebook-line-textarea" rows="3" placeholder="Quais as ações principais que o usuário fará na tela?"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="ui_publico" class="form-label">4. PÚBLICO-ALVO / USUÁRIO *</label>
+              <input type="text" id="ui_publico" class="notebook-line-input" placeholder="Quem usará a interface?">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">5. JÁ EXISTE IDENTIDADE VISUAL PRA SEGUIR?</label>
+              <div class="options-group">
+                <label class="option-box"><input type="radio" name="ui_id_prev" value="nao" checked onclick="toggleConditional('ui_id_extra', false)"><span class="option-box-text">Não, precisaremos definir a estética</span></label>
+                <label class="option-box"><input type="radio" name="ui_id_prev" value="sim" onclick="toggleConditional('ui_id_extra', true)"><span class="option-box-text">Sim, já temos guia de marca / logotipo</span></label>
+              </div>
+              <div class="conditional-field" id="ui_id_extra">
+                <label for="ui_id_link" class="form-label">LINK OU DESCRIÇÃO DA IDENTIDADE VISUAL:</label>
+                <input type="text" id="ui_id_link" class="notebook-line-input" placeholder="Link do manual de marca ou paleta de cores">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="ui_ref" class="form-label">6. REFERÊNCIAS DE INTERFACES QUE GOSTA (LINKS)</label>
+              <textarea id="ui_ref" class="notebook-line-textarea" rows="3" placeholder="Cite aplicativos ou sites com visual ou navegação agradável..."></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">7. DIREÇÃO DE CORES</label>
+              <p style="font-size: 0.88rem; margin-top: -0.25rem; margin-bottom: 1rem;">
+                Você tem cores em mente para este projeto? Selecione as que gosta e as que não gosta, além de descrever o que procura.<br>
+                <em>Não se preocupe em acertar o tom exato, isso é só uma direção para o processo criativo.</em>
+              </p>
+
+              <div class="color-picker-box">
+                <!-- CORES QUE GOSTA -->
+                <div class="color-sub-group">
+                  <label class="form-label" style="font-size: 0.88rem;">CORES QUE GOSTA</label>
+                  <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                    <button type="button" class="btn-add-color" onclick="triggerColorPicker('ui_color_input_gosta')">+ Adicionar cor</button>
+                    <input type="color" id="ui_color_input_gosta" style="display:none;" value="#2C5F7C" onchange="addColorChip('ui_gosta', this.value)">
+                  </div>
+                  <div id="ui_chips_gosta" class="color-chips-container"></div>
+                  <input type="text" id="ui_cores_gosta_texto" class="notebook-line-input" style="margin-top: 0.5rem;" placeholder="Descreva em poucas palavras (ex: tons terrosos, cores vibrantes, paleta monocromática)">
+                </div>
+
+                <!-- CORES QUE NÃO QUER -->
+                <div class="color-sub-group" style="margin-top: 1.25rem;">
+                  <label class="form-label" style="font-size: 0.88rem;">CORES QUE NÃO QUER</label>
+                  <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                    <button type="button" class="btn-add-color" onclick="triggerColorPicker('ui_color_input_nao_quer')">+ Adicionar cor</button>
+                    <input type="color" id="ui_color_input_nao_quer" style="display:none;" value="#8B0000" onchange="addColorChip('ui_nao_quer', this.value)">
+                  </div>
+                  <div id="ui_chips_nao_quer" class="color-chips-container"></div>
+                  <input type="text" id="ui_cores_nao_quer_texto" class="notebook-line-input" style="margin-top: 0.5rem;" placeholder="Alguma cor ou combinação que você quer evitar?">
+                </div>
+              </div>
+            </div>
+
+            <div class="torn-paper-divider"></div>
+
+            <!-- ESCALAS INTERFACE (RÉGUA ENTALHADA 1 A 5) -->
+            <div class="form-group">
+              <label class="form-label" style="font-size: 1rem; margin-bottom: 1rem;">
+                8. PERSONALIDADE DA INTERFACE (MEDIDOR ENTALHADO DE 1 A 5)
+              </label>
+
+              <div class="ruler-scale-gauge">
+                <div class="ruler-ticks"></div>
+                <div class="scale-header"><span class="scale-label-left">MINIMALISTA (1)</span><span class="scale-label-right">RICO EM ELEMENTOS (5)</span></div>
+                <div class="scale-buttons-row">
+                  <div class="scale-btn-item"><input type="radio" name="scale_ui_1" id="sui1_1" value="1"><label for="sui1_1" class="scale-btn-label">1</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_ui_1" id="sui1_2" value="2"><label for="sui1_2" class="scale-btn-label">2</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_ui_1" id="sui1_3" value="3" checked><label for="sui1_3" class="scale-btn-label">3</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_ui_1" id="sui1_4" value="4"><label for="sui1_4" class="scale-btn-label">4</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_ui_1" id="sui1_5" value="5"><label for="sui1_5" class="scale-btn-label">5</label></div>
+                </div>
+              </div>
+
+              <div class="ruler-scale-gauge">
+                <div class="ruler-ticks"></div>
+                <div class="scale-header"><span class="scale-label-left">SÉRIO (1)</span><span class="scale-label-right">LÚDICO (5)</span></div>
+                <div class="scale-buttons-row">
+                  <div class="scale-btn-item"><input type="radio" name="scale_ui_2" id="sui2_1" value="1"><label for="sui2_1" class="scale-btn-label">1</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_ui_2" id="sui2_2" value="2"><label for="sui2_2" class="scale-btn-label">2</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_ui_2" id="sui2_3" value="3" checked><label for="sui2_3" class="scale-btn-label">3</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_ui_2" id="sui2_4" value="4"><label for="sui2_4" class="scale-btn-label">4</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_ui_2" id="sui2_5" value="5"><label for="sui2_5" class="scale-btn-label">5</label></div>
+                </div>
+              </div>
+
+              <div class="ruler-scale-gauge">
+                <div class="ruler-ticks"></div>
+                <div class="scale-header"><span class="scale-label-left">FORMAL (1)</span><span class="scale-label-right">DESCONTRAÍDO (5)</span></div>
+                <div class="scale-buttons-row">
+                  <div class="scale-btn-item"><input type="radio" name="scale_ui_3" id="sui3_1" value="1"><label for="sui3_1" class="scale-btn-label">1</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_ui_3" id="sui3_2" value="2"><label for="sui3_2" class="scale-btn-label">2</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_ui_3" id="sui3_3" value="3" checked><label for="sui3_3" class="scale-btn-label">3</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_ui_3" id="sui3_4" value="4"><label for="sui3_4" class="scale-btn-label">4</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_ui_3" id="sui3_5" value="5"><label for="sui3_5" class="scale-btn-label">5</label></div>
+                </div>
+              </div>
+
+              <div class="ruler-scale-gauge">
+                <div class="ruler-ticks"></div>
+                <div class="scale-header"><span class="scale-label-left">DENSO (1)</span><span class="scale-label-right">ESPAÇOSO (5)</span></div>
+                <div class="scale-buttons-row">
+                  <div class="scale-btn-item"><input type="radio" name="scale_ui_4" id="sui4_1" value="1"><label for="sui4_1" class="scale-btn-label">1</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_ui_4" id="sui4_2" value="2"><label for="sui4_2" class="scale-btn-label">2</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_ui_4" id="sui4_3" value="3" checked><label for="sui4_3" class="scale-btn-label">3</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_ui_4" id="sui4_4" value="4"><label for="sui4_4" class="scale-btn-label">4</label></div>
+                  <div class="scale-btn-item"><input type="radio" name="scale_ui_4" id="sui4_5" value="5"><label for="sui4_5" class="scale-btn-label">5</label></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">8. NÍVEL DE COMPLEXIDADE ESPERADO</label>
+              <div class="options-group">
+                <label class="option-box"><input type="radio" name="ui_complex" value="Poucas telas" checked><span class="option-box-text">Poucas telas (1 a 5 telas chave)</span></label>
+                <label class="option-box"><input type="radio" name="ui_complex" value="Médio porte"><span class="option-box-text">Médio porte (6 a 15 telas)</span></label>
+                <label class="option-box"><input type="radio" name="ui_complex" value="Sistema robusto"><span class="option-box-text">Sistema robusto (fluxos múltiplos e dashboards)</span></label>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-step-actions">
+            <button type="button" class="btn-doc btn-doc-ghost" id="btnBackToCategory">&larr; VOLTAR</button>
+            <button type="button" class="btn-doc btn-doc-primary" id="btnGoToCommon">AVANÇAR PARA DADOS DE CONTATO &rarr;</button>
+          </div>
+        </section>
+
+        <!-- ETAPA 3: CAMPOS COMUNS -->
+        <section class="form-step-section" id="stepCommon" style="display: none;">
+          <div class="document-header-block">
+            <span class="doc-category-badge">ETAPA FINAL</span>
+            <h2 class="form-step-title" style="font-size: 1.8rem;">DADOS DE CONTATO &amp; PRAZO</h2>
+          </div>
+
+          <div class="form-group">
+            <label for="client_nome" class="form-label">SEU NOME OU NOME DA EMPRESA *</label>
+            <input type="text" id="client_nome" class="notebook-line-input" placeholder="Ex: Clara Silveira / Studio Vespera">
+          </div>
+
+          <div class="form-group">
+            <label for="client_contato" class="form-label">EMAIL OU WHATSAPP PARA RETORNO *</label>
+            <input type="text" id="client_contato" class="notebook-line-input" placeholder="Ex: clara@email.com ou (41) 99999-8888">
+          </div>
+
+          <div class="form-group">
+            <label for="client_prazo" class="form-label">PRAZO DESEJADO PARA O PROJETO *</label>
+            <input type="text" id="client_prazo" class="notebook-line-input" placeholder="Ex: Próximos 30 dias ou Até final de Outubro">
+          </div>
+
+          <div class="form-group">
+            <label for="client_orcamento" class="form-label">
+              ORÇAMENTO ESTIMADO <span class="form-label-sub">(OPCIONAL)</span>
+            </label>
+            <input type="text" id="client_orcamento" class="notebook-line-input" placeholder="Ex: R$ 3.000 a R$ 5.000 ou A definir">
+          </div>
+
+          <div class="form-step-actions">
+            <button type="button" class="btn-doc btn-doc-ghost" id="btnBackToQuestions">&larr; VOLTAR</button>
+            <button type="button" class="btn-doc btn-doc-primary" id="btnSubmitForm">REGISTRAR DOSSIÊ AGORA &rarr;</button>
+          </div>
+        </section>
+
+      </form>
+
+      <!-- TELA DE CONFIRMAÇÃO DO DOSSIÊ -->
+      <div class="confirmation-card" id="stepConfirmation" style="display: none;">
+        <div class="confirmation-icon">🐺</div>
+        <h2 class="confirmation-title">DOSSIÊ REGISTRADO COM SUCESSO!</h2>
+        <p class="confirmation-desc">
+          Obrigado por disponibilizar seu tempo para preencher as especificações do projeto. Suas respostas foram salvas no nosso sistema oficial e entraremos em contato em breve.
+        </p>
+        <div style="font-size: 0.85rem; color: #1A1510; letter-spacing: 0.18em; font-weight: 700;">
+          MARCA DO LOBO &bull; G. LOVATO ROSEIRA
+        </div>
+      </div>
+
+    </div><!-- /documento-folha -->
+    </div><!-- /documento-folha-wrapper -->
+
+  </main>
+
+  <script src="../firebase-config.js"></script>
+  <script src="../briefing.js"></script>
+</body>
+</html>

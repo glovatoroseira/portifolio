@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>G. Lovato Roseira | Portfólio de Design</title>
+  <meta name="description" content="Portfólio de G. Lovato Roseira. Identidade híbrida em Design de Interface, Audiovisual e Design Gráfico.">
+  
+  <!-- Google Fonts: Metal Mania (Headers) & Barlow (Body/Text) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Metal+Mania&display=swap" rel="stylesheet">
+  
+  <!-- Early Theme Initialization -->
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    })();
+  </script>
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Header Navigation -->
+  <header class="site-header">
+    <div class="widescreen-canvas header-inner">
+      <a href="#hero" class="brand-logo" aria-label="G. Lovato Roseira Inicio">
+        <!-- Modo escuro: logo escrita clara -->
+        <img src="assets/logo compacta clara.svg" alt="G. Lovato Roseira" class="logo-wordmark logo-wordmark--light">
+        <!-- Modo claro: logo escrita escura -->
+        <img src="assets/logo compacta escura.svg" alt="G. Lovato Roseira" class="logo-wordmark logo-wordmark--dark">
+      </a>
+
+      <button class="menu-toggle" id="menuToggle" aria-label="Abrir Menu de Navegação">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
+
+      <div class="header-right-controls">
+        <nav class="nav-menu" id="navMenu">
+          <a href="#hero" class="nav-link active">Início</a>
+          <a href="#sobre" class="nav-link">Sobre</a>
+          <a href="#projetos" class="nav-link">Projetos</a>
+          <a href="#contato" class="nav-link">Contato</a>
+        </nav>
+
+        <button id="themeToggle" class="theme-toggle-btn" aria-label="Alternar Tema Claro/Escuro" title="Alternar Tema">☀️</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO SECTION (COMPOSIÇÃO CENTRALIZADA COM LOGO ESCRITA) -->
+    <section id="hero" class="hero-section">
+      <div class="widescreen-canvas hero-centered-layout">
+        
+        <!-- Conteúdo Principal -->
+        <div class="hero-content-centered">
+          <div class="hero-badge">PORTFÓLIO DE DESIGN</div>
+          <!-- Logo escrita: clara no tema escuro, escura no tema claro -->
+          <div class="hero-wordmark-wrap">
+            <img src="assets/logo escrito claro.svg" alt="G. Lovato Roseira" class="hero-wordmark logo-wordmark--light">
+            <img src="assets/logo escrito escuro.svg" alt="G. Lovato Roseira" class="hero-wordmark logo-wordmark--dark">
+          </div>
+          
+          <div class="engraved-divider-center"></div>
+
+          <p class="hero-description">
+            Estudante de Desenho Industrial construindo pontes entre a arquitetura de informação digital, a força narrativa do audiovisual e a densidade estética das gravuras e artes visuais.
+          </p>
+
+          <div class="hero-actions">
+            <a href="#projetos" class="btn btn-primary">EXPLORAR PROJETOS</a>
+            <a href="#contato" class="btn btn-secondary">ENTRAR EM CONTATO</a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SOBRE SECTION (GRID 60/40 E PILARES ESCALONADOS) -->
+    <section id="sobre" class="section sobre-section">
+      <div class="widescreen-canvas">
+        
+        <div class="section-header-left">
+          <span class="section-tag">POSICIONAMENTO</span>
+          <h2 class="section-title">SOBRE O TRABALHO</h2>
+          <div class="engraved-divider-left"></div>
+        </div>
+
+        <div class="sobre-asymmetric-grid">
+          <div class="sobre-text-card">
+            <h3 class="sobre-heading">Identidade Híbrida e Prática Criativa</h3>
+            <p>
+              Minha trajetória no design é movida pela investigação gráfica e pela busca por soluções visuais marcantes. Acredito que sistemas digitais modernos se tornam inesquecíveis quando alimentados pela profundidade conceitual do design gráfico tradicional e do ritmo da edição audiovisual.
+            </p>
+            <p>
+              O símbolo do lobo (derivado da origem latina do nome Lovato, <em>lupus</em>) reflete essa postura: rigor técnico na construção, agilidade de adaptação e presença gráfica contundente. Cada projeto é abordado com atenção minuciosa à tipografia, hierarquia visual e experiência do usuário.
+            </p>
+
+            <div class="sobre-stats">
+              <div class="stat-item">
+                <span class="stat-num">03</span>
+                <span class="stat-label">Áreas de Atuação Integradas</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-num">10º</span>
+                <span class="stat-label">Semestre de Desenho Industrial</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pilares de Atuação Integrados -->
+          <div class="pillars-staggered">
+            
+            <div class="pillar-card pillar-interface">
+              <div class="pillar-header">
+                <span class="pillar-accent-tag">INTERFACE</span>
+              </div>
+              <h4 class="pillar-title">Design de Interface (UX/UI)</h4>
+              <p class="pillar-desc">
+                Wireframing, prototipagem interativa, sistemas de design responsivos e arquitetura de informação voltada para usabilidade clara.
+              </p>
+            </div>
+
+            <div class="pillar-card pillar-audiovisual">
+              <div class="pillar-header">
+                <span class="pillar-accent-tag">AUDIOVISUAL</span>
+              </div>
+              <h4 class="pillar-title">Audiovisual &amp; Motion</h4>
+              <p class="pillar-desc">
+                Edição de vídeo, tratamento de cor, narrativa rítmica e animação gráfica em motion design para projetos culturais e marcas.
+              </p>
+            </div>
+
+            <div class="pillar-card pillar-grafico">
+              <div class="pillar-header">
+                <span class="pillar-accent-tag">DESIGN GRÁFICO</span>
+              </div>
+              <h4 class="pillar-title">Identidade Visual &amp; Impressos</h4>
+              <p class="pillar-desc">
+                Criação de marcas, sistemas tipográficos, ilustrações com linguagem entalhada e peças editoriais com peso tátil.
+              </p>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- PROJETOS SECTION (CATÁLOGO WIDESCREEN 3 COLUNAS) -->
+    <section id="projetos" class="section projetos-section">
+      <div class="widescreen-canvas">
+        
+        <div class="section-header-left">
+          <span class="section-tag">CATÁLOGO DE OBRAS</span>
+          <h2 class="section-title">PROJETOS SELECIONADOS</h2>
+          <div class="engraved-divider-left"></div>
+        </div>
+
+        <!-- Filter Buttons (Alinhados à Esquerda) -->
+        <div class="filter-bar-left">
+          <button class="filter-btn active" data-filter="todos">
+            <span class="filter-indicator indicator-all"></span>
+            TODOS OS PROJETOS
+          </button>
+          <button class="filter-btn" data-filter="audiovisual">
+            <span class="filter-indicator indicator-audiovisual"></span>
+            AUDIOVISUAL
+          </button>
+        </div>
+
+        <!-- Projects Grid Widescreen -->
+        <div class="projects-grid-widescreen" id="projectsGrid">
+
+          <!-- Project Card: Audiovisual (Projetados) -->
+          <article class="project-card cat-audiovisual" data-category="audiovisual" data-project-id="1" data-project-slug="projetados">
+            <div class="card-image-wrapper">
+              <div class="card-badge">AUDIOVISUAL</div>
+              <div class="mockup-preview audiovisual-mockup" style="background: linear-gradient(rgba(18, 20, 24, 0.45), rgba(18, 20, 24, 0.7)), url('assets/projetos/projetados-yt-thumbnail.jpg') center/cover no-repeat;">
+                <div class="play-overlay">
+                  <span class="play-icon">&#9658;</span>
+                </div>
+                <div class="video-timeline-graphic">
+                  <div class="timeline-track" style="width: 65%;"></div>
+                </div>
+              </div>
+            </div>
+            <div class="card-info">
+              <span class="project-year">2025</span>
+              <h3 class="project-title">Projetados &bull; Curta-Metragem de Suspense e Terror</h3>
+              <p class="project-summary">
+                Curta-metragem de suspense e drama psicológico realizado em conjunto com Hardie Ray para o Laboratório de Audiovisual (Desenho Industrial - UFSM).
+              </p>
+              <div class="card-tags">
+                <span class="tag">Edição de Vídeo</span>
+                <span class="tag">Montagem</span>
+                <span class="tag">Pré-Produção</span>
+                <span class="tag">Roteiro</span>
+                <span class="tag">Storyboard</span>
+              </div>
+              <a href="projetos/projetados.html" class="btn-card-details">VER PROJETO COMPLETO &rarr;</a>
+            </div>
+          </article>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- CONTATO SECTION (GRID ASSIMÉTRICO 35 / 65) -->
+    <section id="contato" class="section contato-section">
+      <div class="widescreen-canvas">
+        
+        <div class="section-header-left">
+          <span class="section-tag">CONEXÃO &amp; PROPOSTAS</span>
+          <h2 class="section-title">ENTRAR EM CONTATO</h2>
+          <div class="engraved-divider-left"></div>
+        </div>
+
+        <div class="contato-asymmetric-grid">
+          
+          <div class="contato-info-card">
+            <h3 class="contato-heading">Vamos construir algo memorável juntos</h3>
+            <p>
+              Disponível para projetos freelancers, parcerias criativas e oportunidades em design de interface, direção de arte audiovisual ou identidade gráfica.
+            </p>
+
+            <div class="contact-details">
+              <div class="contact-detail-item">
+                <span class="detail-label">EMAIL DIRETO</span>
+                <a href="mailto:g.lovatoroseira@gmail.com" class="detail-value">g.lovatoroseira@gmail.com</a>
+              </div>
+              <div class="contact-detail-item">
+                <span class="detail-label">LOCALIZAÇÃO</span>
+                <span class="detail-value">Curitiba &bull; Brasil (Remoto / Presencial)</span>
+              </div>
+              <div class="contact-detail-item">
+                <span class="detail-label">FORMAÇÃO</span>
+                <span class="detail-value">Desenho Industrial &bull; 10º Semestre</span>
+              </div>
+            </div>
+
+            <div class="social-links-wrapper">
+              <span class="social-title">REDES &amp; PORTFÓLIOS:</span>
+              <div class="social-buttons">
+                <a href="https://linkedin.com" target="_blank" rel="noopener" class="social-btn">LinkedIn</a>
+                <a href="https://behance.net" target="_blank" rel="noopener" class="social-btn">Behance</a>
+                <a href="https://vimeo.com" target="_blank" rel="noopener" class="social-btn">Vimeo</a>
+                <a href="https://github.com" target="_blank" rel="noopener" class="social-btn">GitHub</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Contact Form (Expandido à Direita) -->
+          <div class="contato-form-card">
+            <form id="contactForm" class="engraved-form">
+              <div class="form-group">
+                <label for="formName" class="form-label">SEU NOME *</label>
+                <input type="text" id="formName" name="name" class="form-input" placeholder="Ex: Clara Silveira" required>
+              </div>
+
+              <div class="form-group">
+                <label for="formEmail" class="form-label">SEU EMAIL *</label>
+                <input type="email" id="formEmail" name="email" class="form-input" placeholder="Ex: clara@email.com" required>
+              </div>
+
+              <div class="form-group">
+                <label for="formCategory" class="form-label">ÁREA DO PROJETO</label>
+                <select id="formCategory" name="category" class="form-select">
+                  <option value="interface">Design de Interface (UX/UI)</option>
+                  <option value="audiovisual">Audiovisual / Vídeo</option>
+                  <option value="grafico">Identidade Visual / Gráfico</option>
+                  <option value="outro">Projeto Híbrido / Outro</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="formMessage" class="form-label">MENSAGEM *</label>
+                <textarea id="formMessage" name="message" rows="5" class="form-textarea" placeholder="Descreva brevemente sua ideia ou projeto..." required></textarea>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-block">
+                ENVIAR MENSAGEM &rarr;
+              </button>
+
+              <div id="formFeedback" class="form-feedback" aria-live="polite"></div>
+            </form>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="widescreen-canvas footer-inner">
+      <div class="footer-left">
+        <img src="assets/wolf-crest.svg" alt="Lobo Stamp" class="footer-crest">
+        <div class="footer-brand-info">
+          <span class="footer-brand-name">G. LOVATO ROSEIRA</span>
+          <span class="footer-copy">&copy; 2026 G. Lovato Roseira &bull; Todos os direitos reservados.</span>
+        </div>
+      </div>
+      <div class="footer-right">
+        <span class="footer-motto">MARCA DO LOBO &bull; LUPUS ENGRAVED DESIGN</span>
+        <a href="#hero" class="back-to-top" aria-label="Voltar ao topo">&uarr; TOPO</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- PROJECT DETAIL MODAL -->
+  <div class="modal-backdrop" id="projectModal" aria-hidden="true">
+    <div class="modal-container" role="dialog" aria-labelledby="modalTitle">
+      <button class="modal-close" id="modalClose" aria-label="Fechar janela">&times;</button>
+      
+      <div class="modal-header">
+        <span class="modal-category-badge" id="modalBadge">INTERFACE</span>
+        <h2 class="modal-title" id="modalTitle">Título do Projeto</h2>
+        <span class="modal-meta" id="modalMeta">2026 &bull; Design de Interface</span>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-preview-box" id="modalPreviewBox">
+          <!-- Dynamically populated graphic preview -->
+        </div>
+
+        <div class="modal-description">
+          <h4 class="modal-subheading">Contexto do Projeto</h4>
+          <p id="modalDescContext">
+            Descrição detalhada do desafio e dos objetivos visuais.
+          </p>
+
+          <h4 class="modal-subheading">Processo &amp; Execução</h4>
+          <p id="modalDescProcess">
+            Metodologia aplicada, escolhas tipográficas, decisões de usabilidade e produção gráfica.
+          </p>
+
+          <h4 class="modal-subheading">Ferramentas &amp; Técnicas</h4>
+          <div class="modal-tags" id="modalTags">
+            <!-- Dynamic Tags -->
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="modalCloseBtn">FECHAR</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script src="script.js"></script>
+</body>
+</html>
