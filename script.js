@@ -190,7 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const slug = card.getAttribute('data-project-slug');
       if (slug) {
-        window.location.href = `projetos/${slug}.html`;
+        window.location.href = `projeto.html?p=${encodeURIComponent(slug)}`;
       } else {
         const projectId = card.getAttribute('data-project-id');
         openProjectModal(projectId);
@@ -218,31 +218,36 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ==========================================================================
-     6. FORMULÁRIO DE CONTATO INTERATIVO
+     6. COPIAR E-MAIL PARA A ÁREA DE TRANSFERÊNCIA
      ========================================================================== */
-  const contactForm = document.getElementById('contactForm');
-  const formFeedback = document.getElementById('formFeedback');
+  const btnCopyEmail = document.getElementById('btnCopyEmail');
+  const copyLabelText = document.getElementById('copyLabelText');
+  const contactEmailAddress = document.getElementById('contactEmailAddress');
 
-  if (contactForm) {
-    contactForm.addEventListener('submit', (e) => {
-      e.preventDefault();
+  if (btnCopyEmail && contactEmailAddress) {
+    btnCopyEmail.addEventListener('click', async () => {
+      const email = contactEmailAddress.textContent.trim();
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(email);
+        } else {
+          const tempInput = document.createElement('input');
+          tempInput.value = email;
+          document.body.appendChild(tempInput);
+          tempInput.select();
+          document.execCommand('copy');
+          document.body.removeChild(tempInput);
+        }
 
-      const nameInput = document.getElementById('formName').value.trim();
-      const emailInput = document.getElementById('formEmail').value.trim();
+        btnCopyEmail.classList.add('is-copied');
+        if (copyLabelText) copyLabelText.textContent = 'COPIADO!';
 
-      if (nameInput && emailInput) {
-        formFeedback.style.display = 'block';
-        formFeedback.innerHTML = `
-          <strong>Mensagem enviada com sucesso!</strong><br>
-          Obrigado pelo contato, ${nameInput}. G. Lovato Roseira responderá em breve no e-mail <em>${emailInput}</em>.
-        `;
-        
-        contactForm.reset();
-
-        // Ocultar mensagem após 7 segundos
         setTimeout(() => {
-          formFeedback.style.display = 'none';
-        }, 7000);
+          btnCopyEmail.classList.remove('is-copied');
+          if (copyLabelText) copyLabelText.textContent = 'COPIAR E-MAIL';
+        }, 2500);
+      } catch (err) {
+        console.warn('Não foi possível copiar automaticamente:', err);
       }
     });
   }

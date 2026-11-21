@@ -17,11 +17,11 @@ try {
 Write-Host "==========================================================" -ForegroundColor Cyan
 Write-Host "  PORTFOLIO G. LOVATO ROSEIRA - SERVIDOR LOCAL INICIADO" -ForegroundColor Green
 Write-Host "  Acesse: $prefix" -ForegroundColor Yellow
-Write-Host "  Curta Projetados: ${prefix}projetos/projetados.html" -ForegroundColor Yellow
+Write-Host "  Curta Projetados: ${prefix}projeto.html?p=projetados" -ForegroundColor Yellow
 Write-Host "  Pressione Ctrl+C para encerrar o servidor." -ForegroundColor Gray
 Write-Host "==========================================================" -ForegroundColor Cyan
 
-Start-Process "${prefix}projetos/projetados.html"
+Start-Process "${prefix}projeto.html?p=projetados"
 
 $baseDir = $PSScriptRoot
 

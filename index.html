@@ -205,7 +205,7 @@
                 <span class="tag">Roteiro</span>
                 <span class="tag">Storyboard</span>
               </div>
-              <a href="projetos/projetados.html" class="btn-card-details">VER PROJETO COMPLETO &rarr;</a>
+              <a href="projeto.html?p=projetados" class="btn-card-details">VER PROJETO COMPLETO &rarr;</a>
             </div>
           </article>
 
@@ -214,84 +214,97 @@
       </div>
     </section>
 
-    <!-- CONTATO SECTION (GRID ASSIMÉTRICO 35 / 65) -->
+    <!-- CONTATO SECTION (LINKS DIRETOS & REDES) -->
     <section id="contato" class="section contato-section">
       <div class="widescreen-canvas">
         
         <div class="section-header-left">
-          <span class="section-tag">CONEXÃO &amp; PROPOSTAS</span>
+          <span class="section-tag">CONEXÃO &amp; DIÁLOGO</span>
           <h2 class="section-title">ENTRAR EM CONTATO</h2>
           <div class="engraved-divider-left"></div>
         </div>
 
-        <div class="contato-asymmetric-grid">
+        <div class="contato-direct-grid">
           
-          <div class="contato-info-card">
+          <!-- Apresentação & Informações de Atuação -->
+          <div class="contato-intro-card">
+            <span class="contato-badge">DISPONIBILIDADE IMEDIATA</span>
             <h3 class="contato-heading">Vamos construir algo memorável juntos</h3>
-            <p>
+            <p class="contato-description">
               Disponível para projetos freelancers, parcerias criativas e oportunidades em design de interface, direção de arte audiovisual ou identidade gráfica.
             </p>
 
-            <div class="contact-details">
-              <div class="contact-detail-item">
-                <span class="detail-label">EMAIL DIRETO</span>
-                <a href="mailto:g.lovatoroseira@gmail.com" class="detail-value">g.lovatoroseira@gmail.com</a>
-              </div>
-              <div class="contact-detail-item">
+            <div class="contact-details-list">
+              <div class="contact-detail-row">
                 <span class="detail-label">LOCALIZAÇÃO</span>
-                <span class="detail-value">Curitiba &bull; Brasil (Remoto / Presencial)</span>
+                <span class="detail-value">Santa Maria - RS &bull; Brasil (Remoto e Presencial)</span>
               </div>
-              <div class="contact-detail-item">
-                <span class="detail-label">FORMAÇÃO</span>
-                <span class="detail-value">Desenho Industrial &bull; 10º Semestre</span>
+              <div class="contact-detail-row">
+                <span class="detail-label">FORMAÇÃO ACADÊMICA</span>
+                <span class="detail-value">Desenho Industrial &bull; 10º Semestre (UFSM)</span>
               </div>
-            </div>
-
-            <div class="social-links-wrapper">
-              <span class="social-title">REDES &amp; PORTFÓLIOS:</span>
-              <div class="social-buttons">
-                <a href="https://linkedin.com" target="_blank" rel="noopener" class="social-btn">LinkedIn</a>
-                <a href="https://behance.net" target="_blank" rel="noopener" class="social-btn">Behance</a>
-                <a href="https://vimeo.com" target="_blank" rel="noopener" class="social-btn">Vimeo</a>
-                <a href="https://github.com" target="_blank" rel="noopener" class="social-btn">GitHub</a>
+              <div class="contact-detail-row">
+                <span class="detail-label">ESPECIALIDADES</span>
+                <span class="detail-value">Design de Interface &bull; Montagem Audiovisual &bull; Identidade Visual</span>
               </div>
             </div>
           </div>
 
-          <!-- Contact Form (Expandido à Direita) -->
-          <div class="contato-form-card">
-            <form id="contactForm" class="engraved-form">
-              <div class="form-group">
-                <label for="formName" class="form-label">SEU NOME *</label>
-                <input type="text" id="formName" name="name" class="form-input" placeholder="Ex: Clara Silveira" required>
+          <!-- Canais Diretos (Email em Destaque + Redes) -->
+          <div class="contato-channels-card">
+            
+            <!-- Bloco de Destaque: Email Direto com Ação Mailto e Opção de Copiar -->
+            <div class="email-direct-box">
+              <div class="email-box-header">
+                <span class="email-box-tag">CANAL PRINCIPAL &bull; E-MAIL</span>
+                <button type="button" class="btn-copy-email" id="btnCopyEmail" aria-label="Copiar endereço de e-mail">
+                  <span class="copy-icon">&#x2398;</span>
+                  <span class="copy-label" id="copyLabelText">COPIAR E-MAIL</span>
+                </button>
               </div>
+              
+              <a href="mailto:g.lovatoroseira@gmail.com" class="email-address-link" title="Clique para abrir seu aplicativo de e-mail">
+                <span class="email-text" id="contactEmailAddress">g.lovatoroseira@gmail.com</span>
+                <span class="email-action-hint">ABRIR NO APP DE E-MAIL &rarr;</span>
+              </a>
+              
+              <p class="email-box-note">
+                Clique no endereço acima para abrir diretamente no seu aplicativo de e-mail, ou use o botão para copiar o endereço.
+              </p>
+            </div>
 
-              <div class="form-group">
-                <label for="formEmail" class="form-label">SEU EMAIL *</label>
-                <input type="email" id="formEmail" name="email" class="form-input" placeholder="Ex: clara@email.com" required>
+            <!-- Bloco de Redes Sociais e Canais Externos -->
+            <div class="social-channels-box">
+              <span class="social-box-title">REDES &amp; CANAIS EXTERNOS:</span>
+              <div class="social-channels-grid">
+                
+                <a href="https://www.instagram.com/glovatoroseira.design/" target="_blank" rel="noopener noreferrer" class="social-channel-item">
+                  <div class="channel-info">
+                    <span class="channel-platform">INSTAGRAM</span>
+                    <span class="channel-handle">@glovatoroseira.design</span>
+                  </div>
+                  <span class="channel-arrow">&rarr;</span>
+                </a>
+
+                <a href="https://www.youtube.com/@GiovanasLovato" target="_blank" rel="noopener noreferrer" class="social-channel-item">
+                  <div class="channel-info">
+                    <span class="channel-platform">YOUTUBE</span>
+                    <span class="channel-handle">@GiovanasLovato</span>
+                  </div>
+                  <span class="channel-arrow">&rarr;</span>
+                </a>
+
+                <a href="https://www.linkedin.com/in/giovana-lovato-riske-roseira-0268a1265/" target="_blank" rel="noopener noreferrer" class="social-channel-item">
+                  <div class="channel-info">
+                    <span class="channel-platform">LINKEDIN</span>
+                    <span class="channel-handle">Giovana Lovato Roseira</span>
+                  </div>
+                  <span class="channel-arrow">&rarr;</span>
+                </a>
+
               </div>
+            </div>
 
-              <div class="form-group">
-                <label for="formCategory" class="form-label">ÁREA DO PROJETO</label>
-                <select id="formCategory" name="category" class="form-select">
-                  <option value="interface">Design de Interface (UX/UI)</option>
-                  <option value="audiovisual">Audiovisual / Vídeo</option>
-                  <option value="grafico">Identidade Visual / Gráfico</option>
-                  <option value="outro">Projeto Híbrido / Outro</option>
-                </select>
-              </div>
-
-              <div class="form-group">
-                <label for="formMessage" class="form-label">MENSAGEM *</label>
-                <textarea id="formMessage" name="message" rows="5" class="form-textarea" placeholder="Descreva brevemente sua ideia ou projeto..." required></textarea>
-              </div>
-
-              <button type="submit" class="btn btn-primary btn-block">
-                ENVIAR MENSAGEM &rarr;
-              </button>
-
-              <div id="formFeedback" class="form-feedback" aria-live="polite"></div>
-            </form>
           </div>
 
         </div>
