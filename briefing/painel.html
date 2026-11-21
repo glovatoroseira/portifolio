@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="robots" content="noindex, nofollow">
   <title>Painel de Briefings &bull; G. Lovato Roseira</title>
 
   <!-- Google Fonts: Metal Mania (Títulos) & Barlow (Corpo) -->
@@ -20,11 +21,6 @@
   </script>
 
   <link rel="stylesheet" href="briefing.css">
-
-  <!-- Firebase JS SDK (CDN Compat) -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 </head>
 <body data-page="painel">
 
@@ -140,7 +136,7 @@
     </div>
   </div>
 
-  <script src="firebase-config.js"></script>
-  <script src="briefing.js"></script>
+  <script type="module" src="firebase-config.js"></script>
+  <script type="module" src="briefing.js"></script>
 </body>
 </html>

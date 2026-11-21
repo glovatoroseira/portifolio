@@ -561,7 +561,7 @@ body[data-page="formulario"] {
     url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
   color: #1A1510;
 
-  /* Canto superior direito cortado (dog-ear) — 36px */
+  /* Canto superior direito cortado (dog-ear): 36px */
   clip-path: polygon(
     0 0,
     calc(100% - 36px) 0,
@@ -803,7 +803,7 @@ body[data-page="formulario"] {
           drop-shadow(6px 8px 0px rgba(0,0,0,0.18));
 }
 
-/* .dossier-paper-sheet is now a semantic class only — all visual styling is on .documento-folha */
+/* .dossier-paper-sheet is now a semantic class only: all visual styling is on .documento-folha */
 .dossier-paper-sheet {
   position: relative;
 }

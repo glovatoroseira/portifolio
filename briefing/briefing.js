@@ -1,7 +1,25 @@
 /**
- * G. LOVATO ROSEIRA - SEÇÃO DE BRIEFINGS
- * Lógica de Autenticação, Firestore CRUD, Filtros, Impressão PDF e Formulário do Cliente
+ * G. LOVATO ROSEIRA: SEÇÃO DE BRIEFINGS (ES MODULE)
+ * Integração com Firebase v13.4.0 (Auth & Firestore)
+ * Gerenciamento de Tema, Formulário do Cliente, Login, Painel e Dossiê em PDF
  */
+
+import { auth, db } from './firebase-config.js';
+import {
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut
+} from 'https://www.gstatic.com/firebasejs/13.4.0/firebase-auth.js';
+import {
+  collection,
+  addDoc,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  orderBy,
+  serverTimestamp
+} from 'https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js';
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -19,7 +37,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Obter tema salvo
   const currentTheme = localStorage.getItem('theme') || 'dark';
   applyTheme(currentTheme);
 
@@ -31,25 +48,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  const currentPage = document.body.getAttribute('data-page') || '';
-  
-  // Controle de Sessão Demonstrativa / Fallback Local
-  const DEMO_AUTH_KEY = 'lovato_briefings_auth_session';
-  
-  function setDemoSession(userEmail) {
-    localStorage.setItem(DEMO_AUTH_KEY, JSON.stringify({ email: userEmail, loggedInAt: Date.now() }));
-  }
+  const currentPage = (document.body.getAttribute('data-page') || '').toLowerCase();
 
-  function getDemoSession() {
-    const session = localStorage.getItem(DEMO_AUTH_KEY);
-    return session ? JSON.parse(session) : null;
-  }
-
-  function clearDemoSession() {
-    localStorage.removeItem(DEMO_AUTH_KEY);
-  }
-
-  // Função utilitária para campos condicionais
+  /* ==========================================================================
+     UTILITÁRIOS GLOBAIS DE FORMULÁRIO (CHIPS DE COR E CAMPOS CONDICIONAIS)
+     ========================================================================== */
   window.toggleConditional = function(elementId, show) {
     const el = document.getElementById(elementId);
     if (el) {
@@ -58,9 +61,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  /* ==========================================================================
-     GERENCIAMENTO DE CHIPS DE COR DO DOSSIÊ
-     ========================================================================== */
   const colorArrays = {
     id_cores_gosta: [],
     id_cores_nao_quer: [],
@@ -129,32 +129,73 @@ document.addEventListener('DOMContentLoaded', () => {
   const loginForm = document.getElementById('loginForm');
   const loginFeedback = document.getElementById('loginFeedback');
 
-  if (loginForm) {
-    loginForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const email = document.getElementById('loginEmail').value.trim();
-      const password = document.getElementById('loginPassword').value.trim();
-
-      if (!email || !password) return;
-
-      if (auth && isFirebaseConfigured) {
-        try {
-          await auth.signInWithEmailAndPassword(email, password);
-          window.location.href = 'painel.html';
-        } catch (err) {
-          loginFeedback.style.display = 'block';
-          loginFeedback.textContent = 'Erro ao realizar login: Credenciais inválidas ou e-mail não cadastrado.';
-        }
-      } else {
-        if (password.length >= 4) {
-          setDemoSession(email);
-          window.location.href = 'painel.html';
-        } else {
-          loginFeedback.style.display = 'block';
-          loginFeedback.textContent = 'Por favor, informe uma senha com pelo menos 4 caracteres para o login de teste.';
-        }
+  if (loginForm || currentPage === 'login') {
+    // Se o usuário já estiver logado, redireciona para painel.html
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        window.location.replace('painel.html');
       }
     });
+
+    if (loginForm) {
+      loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value.trim();
+        const submitBtn = loginForm.querySelector('button[type="submit"]');
+
+        if (!email || !password) return;
+
+        if (loginFeedback) {
+          loginFeedback.style.display = 'none';
+          loginFeedback.textContent = '';
+        }
+
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.textContent = 'AUTENTICANDO...';
+        }
+
+        try {
+          await signInWithEmailAndPassword(auth, email, password);
+          window.location.replace('painel.html');
+        } catch (err) {
+          console.error("Erro na autenticação:", err);
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'ENTRAR NO PAINEL \u2192';
+          }
+
+          let msg = 'Erro ao realizar login. Verifique seus dados.';
+          switch (err.code) {
+            case 'auth/invalid-credential':
+            case 'auth/wrong-password':
+            case 'auth/user-not-found':
+              msg = 'E-mail ou senha incorretos.';
+              break;
+            case 'auth/invalid-email':
+              msg = 'O formato do e-mail digitado não é válido.';
+              break;
+            case 'auth/user-disabled':
+              msg = 'Esta conta de usuário foi desativada.';
+              break;
+            case 'auth/too-many-requests':
+              msg = 'Muitas tentativas sem sucesso. Bloqueado temporariamente por segurança. Tente novamente mais tarde.';
+              break;
+            case 'auth/network-request-failed':
+              msg = 'Falha de conexão com os servidores de autenticação. Verifique sua internet.';
+              break;
+            default:
+              msg = `Falha na autenticação: ${err.message}`;
+          }
+
+          if (loginFeedback) {
+            loginFeedback.style.display = 'block';
+            loginFeedback.textContent = msg;
+          }
+        }
+      });
+    }
   }
 
   /* ==========================================================================
@@ -163,216 +204,182 @@ document.addEventListener('DOMContentLoaded', () => {
   if (currentPage === 'painel') {
     const userEmailTag = document.getElementById('userEmailTag');
     const logoutBtn = document.getElementById('logoutBtn');
+    const tableBody = document.getElementById('briefingsTableBody');
     const searchInput = document.getElementById('searchInput');
     const categoryFilter = document.getElementById('categoryFilter');
-    const briefingsTableBody = document.getElementById('briefingsTableBody');
 
-    const newBriefingBtn = document.getElementById('newBriefingBtn');
-    const briefingModal = document.getElementById('briefingModal');
-    const modalCloseX = document.getElementById('modalCloseX');
-    const modalCancelBtn = document.getElementById('modalCancelBtn');
-    const briefingForm = document.getElementById('briefingForm');
-    const modalTitleText = document.getElementById('modalTitleText');
-    const briefingIdInput = document.getElementById('briefingIdInput');
+    let allBriefings = [];
 
-    function checkAuth() {
-      if (auth && isFirebaseConfigured) {
-        auth.onAuthStateChanged((user) => {
-          if (user) {
-            userEmailTag.textContent = user.email;
-            fetchAndRenderBriefings();
-          } else {
-            window.location.href = 'login.html';
+    // Proteção de rota via onAuthStateChanged
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        // Se não houver usuário logado, redireciona e não carrega nada
+        window.location.replace('login.html');
+        return;
+      }
+
+      // Usuário autenticado
+      if (userEmailTag) {
+        userEmailTag.textContent = user.email || 'Administradora';
+      }
+
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', async () => {
+          try {
+            await signOut(auth);
+            window.location.replace('login.html');
+          } catch (err) {
+            console.error("Erro ao sair:", err);
+            window.location.replace('login.html');
           }
         });
-      } else {
-        const demoSession = getDemoSession();
-        if (demoSession) {
-          userEmailTag.textContent = demoSession.email;
-          fetchAndRenderBriefings();
+      }
+
+      // Carregar os briefings do Firestore
+      await loadBriefingsList();
+    });
+
+    async function loadBriefingsList() {
+      if (!tableBody) return;
+
+      tableBody.innerHTML = `
+        <tr>
+          <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 2.5rem;">
+            Carregando acervo de briefings...
+          </td>
+        </tr>
+      `;
+
+      try {
+        const q = query(collection(db, "briefings"), orderBy("criadoEm", "desc"));
+        const snapshot = await getDocs(q);
+
+        allBriefings = [];
+        snapshot.forEach(docSnap => {
+          allBriefings.push({
+            id: docSnap.id,
+            ...docSnap.data()
+          });
+        });
+
+        renderTable(allBriefings);
+      } catch (err) {
+        console.error("Erro ao carregar briefings:", err);
+        if (err.code === 'permission-denied') {
+          tableBody.innerHTML = `
+            <tr>
+              <td colspan="4" style="text-align: center; padding: 3rem 1.5rem;">
+                <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔒</div>
+                <h3 style="font-family: var(--font-title); font-size: 1.4rem; color: #C62828; margin-bottom: 0.5rem;">SEM PERMISSÃO</h3>
+                <p style="font-size: 0.95rem; color: var(--text-paper); max-width: 520px; margin: 0 auto; line-height: 1.5;">
+                  O Firestore recusou a leitura da coleção de briefings. Verifique as Regras de Segurança (Firestore Security Rules) no Console do Firebase.
+                </p>
+              </td>
+            </tr>
+          `;
         } else {
-          window.location.href = 'login.html';
+          tableBody.innerHTML = `
+            <tr>
+              <td colspan="4" style="text-align: center; color: #C62828; padding: 2.5rem;">
+                <strong>Erro ao carregar briefings:</strong> ${escapeHtml(err.message)}
+              </td>
+            </tr>
+          `;
         }
       }
     }
 
-    if (logoutBtn) {
-      logoutBtn.addEventListener('click', () => {
-        if (auth && isFirebaseConfigured) {
-          auth.signOut().then(() => { window.location.href = 'login.html'; });
-        } else {
-          clearDemoSession();
-          window.location.href = 'login.html';
-        }
-      });
-    }
+    function renderTable(list) {
+      if (!tableBody) return;
 
-    let currentBriefings = [];
-
-    async function fetchAndRenderBriefings() {
-      if (db && isFirebaseConfigured) {
-        try {
-          const snapshot = await db.collection("briefings").orderBy("createdAt", "desc").get();
-          currentBriefings = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        } catch (err) {
-          console.warn("Erro ao buscar briefings do Firestore, recorrendo ao banco local:", err);
-          currentBriefings = getLocalBriefings();
-        }
-      } else {
-        currentBriefings = getLocalBriefings();
-      }
-      renderTable();
-    }
-
-    function renderTable() {
-      const searchTerm = searchInput ? searchInput.value.toLowerCase().trim() : '';
-      const selectedCat = categoryFilter ? categoryFilter.value : 'todos';
-
-      const filtered = currentBriefings.filter(item => {
-        const titleMatch = (item.titulo || '').toLowerCase().includes(searchTerm);
-        const catMatch = (selectedCat === 'todos') || (item.categoria === selectedCat);
-        return titleMatch && catMatch;
-      });
-
-      if (filtered.length === 0) {
-        briefingsTableBody.innerHTML = `
+      if (list.length === 0) {
+        tableBody.innerHTML = `
           <tr>
-            <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 2rem;">
-              Nenhum briefing encontrado para os critérios de busca selecionados.
+            <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 2.5rem;">
+              Nenhum briefing registrado no momento.
             </td>
           </tr>
         `;
         return;
       }
 
-      const catLabels = {
-        interface: 'Interface (UX/UI)',
-        audiovisual: 'Audiovisual',
-        grafico: 'Identidade Visual'
-      };
+      tableBody.innerHTML = list.map(item => {
+        let catLabel = 'GERAL';
+        let badgeColor = 'var(--color-graphite)';
 
-      briefingsTableBody.innerHTML = filtered.map(item => `
-        <tr>
-          <td>
-            <a href="detalhe.html?id=${item.id}" class="table-title" style="text-decoration: underline;">
-              ${escapeHtml(item.titulo)}
-            </a>
-          </td>
-          <td>
-            <span class="doc-category-badge" style="font-size: 0.7rem; padding: 0.15rem 0.4rem;">
-              ${catLabels[item.categoria] || item.categoria || 'Geral'}
-            </span>
-          </td>
-          <td>${formatDate(item.createdAt)}</td>
-          <td>
-            <div class="table-actions">
-              <a href="detalhe.html?id=${item.id}" class="btn-doc btn-doc-ghost" style="padding: 0.3rem 0.6rem; font-size: 0.75rem;">
-                VER / PDF
+        if (item.categoria === 'interface') {
+          catLabel = 'INTERFACE';
+          badgeColor = 'var(--accent-interface)';
+        } else if (item.categoria === 'audiovisual') {
+          catLabel = 'AUDIOVISUAL';
+          badgeColor = 'var(--accent-audiovisual)';
+        } else if (item.categoria === 'grafico') {
+          catLabel = 'IDENTIDADE VISUAL';
+          badgeColor = 'var(--accent-grafico)';
+        }
+
+        const dateFormatted = formatTimestamp(item.criadoEm || item.createdAt);
+        const displayTitle = item.titulo || item.respostas?.nomeMarca || item.clienteNome || 'Briefing sem título';
+
+        return `
+          <tr>
+            <td>
+              <a href="detalhe.html?id=${item.id}" class="table-title" style="text-decoration: underline;">
+                ${escapeHtml(displayTitle)}
               </a>
-              <button onclick="editBriefing('${item.id}')" class="btn-doc btn-doc-ghost" style="padding: 0.3rem 0.6rem; font-size: 0.75rem;">
-                EDITAR
-              </button>
-              <button onclick="deleteBriefingItem('${item.id}')" class="btn-doc btn-doc-danger" style="padding: 0.3rem 0.6rem; font-size: 0.75rem;">
-                EXCLUIR
-              </button>
-            </div>
-          </td>
-        </tr>
-      `).join('');
+              ${item.clienteNome ? `<div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem;">Cliente: ${escapeHtml(item.clienteNome)}</div>` : ''}
+            </td>
+            <td>
+              <span class="category-badge-table" style="background-color: ${badgeColor};">
+                ${catLabel}
+              </span>
+            </td>
+            <td>${dateFormatted}</td>
+            <td>
+              <a href="detalhe.html?id=${item.id}" class="btn-doc btn-doc-ghost" style="padding: 0.35rem 0.75rem; font-size: 0.75rem;">
+                VER DOSSIÊ &rarr;
+              </a>
+            </td>
+          </tr>
+        `;
+      }).join('');
     }
 
-    if (searchInput) searchInput.addEventListener('input', renderTable);
-    if (categoryFilter) categoryFilter.addEventListener('change', renderTable);
+    // Busca simples e filtro por categoria
+    function applyFilters() {
+      const term = (searchInput?.value || '').toLowerCase().trim();
+      const cat = categoryFilter?.value || 'todos';
 
-    function openModal(isEdit = false) {
-      modalTitleText.textContent = isEdit ? 'EDITAR BRIEFING' : 'NOVO BRIEFING';
-      briefingModal.classList.add('active');
+      const filtered = allBriefings.filter(item => {
+        const matchesCategory = (cat === 'todos') || (item.categoria === cat);
+        const titleMatch = (item.titulo || '').toLowerCase().includes(term);
+        const clientMatch = (item.clienteNome || '').toLowerCase().includes(term);
+        const contentMatch = (item.conteudo || '').toLowerCase().includes(term);
+
+        return matchesCategory && (titleMatch || clientMatch || contentMatch);
+      });
+
+      renderTable(filtered);
     }
 
-    function closeModal() {
-      briefingModal.classList.remove('active');
-      briefingForm.reset();
-      briefingIdInput.value = '';
-    }
+    if (searchInput) searchInput.addEventListener('input', applyFilters);
+    if (categoryFilter) categoryFilter.addEventListener('change', applyFilters);
+
+    // Modal de criação manual no painel (opcional)
+    const newBriefingBtn = document.getElementById('newBriefingBtn');
+    const briefingModal = document.getElementById('briefingModal');
+    const modalCloseX = document.getElementById('modalCloseX');
+    const modalCancelBtn = document.getElementById('modalCancelBtn');
+    const briefingForm = document.getElementById('briefingForm');
 
     if (newBriefingBtn) {
       newBriefingBtn.addEventListener('click', () => {
-        briefingForm.reset();
-        briefingIdInput.value = '';
-        document.getElementById('formDate').value = new Date().toISOString().split('T')[0];
-        openModal(false);
+        window.location.href = 'formulario.html';
       });
     }
 
-    if (modalCloseX) modalCloseX.addEventListener('click', closeModal);
-    if (modalCancelBtn) modalCancelBtn.addEventListener('click', closeModal);
-
-    if (briefingForm) {
-      briefingForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        const id = briefingIdInput.value;
-        const briefingData = {
-          titulo: document.getElementById('formTitle').value.trim(),
-          categoria: document.getElementById('formCategory').value,
-          createdAt: document.getElementById('formDate').value || new Date().toISOString().split('T')[0],
-          linkMaterial: document.getElementById('formMaterial').value.trim(),
-          conteudo: document.getElementById('formContent').value.trim(),
-          pdfFlag: true
-        };
-
-        if (db && isFirebaseConfigured) {
-          try {
-            if (id) {
-              await db.collection("briefings").doc(id).update(briefingData);
-            } else {
-              await db.collection("briefings").add(briefingData);
-            }
-          } catch (err) {
-            console.warn("Erro no Firestore, salvando localmente:", err);
-            briefingData.id = id;
-            saveLocalBriefing(briefingData);
-          }
-        } else {
-          briefingData.id = id;
-          saveLocalBriefing(briefingData);
-        }
-
-        closeModal();
-        fetchAndRenderBriefings();
-      });
-    }
-
-    window.editBriefing = (id) => {
-      const item = currentBriefings.find(b => b.id === id);
-      if (!item) return;
-
-      briefingIdInput.value = item.id;
-      document.getElementById('formTitle').value = item.titulo || '';
-      document.getElementById('formCategory').value = item.categoria || 'interface';
-      document.getElementById('formDate').value = item.createdAt || new Date().toISOString().split('T')[0];
-      document.getElementById('formMaterial').value = item.linkMaterial || '';
-      document.getElementById('formContent').value = item.conteudo || '';
-
-      openModal(true);
-    };
-
-    window.deleteBriefingItem = async (id) => {
-      if (confirm("Tem certeza de que deseja excluir este briefing do sistema?")) {
-        if (db && isFirebaseConfigured) {
-          try {
-            await db.collection("briefings").doc(id).delete();
-          } catch (err) {
-            deleteLocalBriefing(id);
-          }
-        } else {
-          deleteLocalBriefing(id);
-        }
-        fetchAndRenderBriefings();
-      }
-    };
-
-    checkAuth();
+    if (modalCloseX) modalCloseX.addEventListener('click', () => briefingModal.classList.remove('active'));
+    if (modalCancelBtn) modalCancelBtn.addEventListener('click', () => briefingModal.classList.remove('active'));
   }
 
   /* ==========================================================================
@@ -394,75 +401,133 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const briefingId = urlParams.get('id');
-
-    async function loadBriefingDetail() {
-      if (!briefingId) {
-        docTitle.textContent = "Briefing não especificado.";
-        docContent.innerHTML = "<p>Por favor, selecione um briefing a partir do painel administrativo.</p>";
+    // Proteção de rota via onAuthStateChanged
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.replace('login.html');
         return;
       }
 
-      let data = null;
+      const urlParams = new URLSearchParams(window.location.search);
+      const briefingId = urlParams.get('id');
 
-      if (db && isFirebaseConfigured) {
-        try {
-          const doc = await db.collection("briefings").doc(briefingId).get();
-          if (doc.exists) {
-            data = { id: doc.id, ...doc.data() };
-          }
-        } catch (err) {
-          console.warn("Erro ao carregar do Firestore:", err);
+      if (!briefingId) {
+        showDetailError("IDENTIFICADOR NÃO INFORMADO", "Nenhum código de briefing foi informado na URL.");
+        return;
+      }
+
+      try {
+        const docRef = doc(db, "briefings", briefingId);
+        const docSnap = await getDoc(docRef);
+
+        if (!docSnap.exists()) {
+          showDetailError("BRIEFING NÃO ENCONTRADO", "O documento solicitado não existe ou foi removido do sistema.");
+          return;
+        }
+
+        const data = docSnap.data();
+        renderBriefingDoc(briefingId, data);
+      } catch (err) {
+        console.error("Erro ao carregar detalhe do briefing:", err);
+        if (err.code === 'permission-denied') {
+          showDetailError("SEM PERMISSÃO", "O Firestore recusou a leitura deste documento. Verifique as Regras de Segurança no Console do Firebase.");
+        } else {
+          showDetailError("ERRO AO CARREGAR DOCUMENTO", err.message);
         }
       }
+    });
 
-      if (!data) {
-        const localItems = getLocalBriefings();
-        data = localItems.find(i => i.id === briefingId);
+    function showDetailError(heading, message) {
+      if (docCategoryBadge) docCategoryBadge.textContent = 'ERRO';
+      if (docTitle) {
+        docTitle.textContent = heading;
+        docTitle.style.color = '#C62828';
       }
-
-      if (!data) {
-        docTitle.textContent = "Briefing não encontrado";
-        docContent.innerHTML = "<p>O documento solicitado não consta no banco de dados.</p>";
-        return;
-      }
-
-      const catLabels = {
-        interface: 'DESIGN DE INTERFACE (UX/UI)',
-        audiovisual: 'AUDIOVISUAL & MOTION',
-        grafico: 'IDENTIDADE VISUAL'
-      };
-
-      docTitle.textContent = data.titulo || 'Sem título';
-      docCategoryBadge.textContent = catLabels[data.categoria] || (data.categoria ? data.categoria.toUpperCase() : 'DOCUMENTO DE BRIEFING');
-      docDate.textContent = formatDate(data.createdAt);
-      docId.textContent = '#' + (data.id || '---');
-
-      if (data.conteudo.includes('<h') || data.conteudo.includes('<p>')) {
-        docContent.innerHTML = data.conteudo;
-      } else {
-        docContent.innerHTML = data.conteudo.split('\n\n').map(p => `<p>${escapeHtml(p)}</p>`).join('');
-      }
-
-      if (data.linkMaterial) {
-        docMaterialsBox.style.display = 'block';
-        docMaterialsLink.href = data.linkMaterial;
-        docMaterialsLink.textContent = data.linkMaterial;
-      } else {
-        docMaterialsBox.style.display = 'none';
+      if (docContent) {
+        docContent.innerHTML = `
+          <div style="padding: 2rem; border: 1px solid #C62828; background: rgba(198, 40, 40, 0.08); margin-top: 1rem;">
+            <p style="font-size: 1rem; color: var(--text-paper); margin: 0;">${escapeHtml(message)}</p>
+            <div style="margin-top: 1.5rem;">
+              <a href="painel.html" class="btn-doc btn-doc-ghost">&larr; VOLTAR AO PAINEL</a>
+            </div>
+          </div>
+        `;
       }
     }
 
-    loadBriefingDetail();
+    function renderBriefingDoc(id, data) {
+      const displayTitle = data.titulo || data.respostas?.nomeMarca || data.clienteNome || 'Briefing Sem Título';
+      
+      if (docTitle) docTitle.textContent = displayTitle;
+      if (docId) docId.textContent = `#${id.slice(0, 10).toUpperCase()}`;
+      if (docDate) docDate.textContent = formatTimestamp(data.criadoEm || data.createdAt);
+
+      let catText = 'DOCUMENTO OFICIAL';
+      let catColor = 'var(--color-graphite)';
+
+      if (data.categoria === 'interface') {
+        catText = 'ESPECIFICAÇÕES DE INTERFACE';
+        catColor = 'var(--accent-interface)';
+      } else if (data.categoria === 'audiovisual') {
+        catText = 'DIRETRIZES AUDIOVISUAIS';
+        catColor = 'var(--accent-audiovisual)';
+      } else if (data.categoria === 'grafico') {
+        catText = 'IDENTIDADE VISUAL & MARCA';
+        catColor = 'var(--accent-grafico)';
+      }
+
+      if (docCategoryBadge) {
+        docCategoryBadge.textContent = catText;
+        docCategoryBadge.style.backgroundColor = catColor;
+      }
+
+      // Se houver o HTML formatado em data.conteudo
+      if (data.conteudo) {
+        if (docContent) docContent.innerHTML = data.conteudo;
+      } else if (data.respostas) {
+        // Se houver apenas o objeto respostas, monta a visualização estruturada
+        if (docContent) docContent.innerHTML = buildHtmlFromRespostas(data);
+      }
+
+      // Link para materiais de apoio
+      const matLink = data.linkMaterial || data.respostas?.materialLink || data.respostas?.roteiroLink || data.respostas?.idLink;
+      if (matLink && docMaterialsBox && docMaterialsLink) {
+        docMaterialsBox.style.display = 'block';
+        docMaterialsLink.href = matLink;
+        docMaterialsLink.textContent = matLink;
+      }
+    }
+
+    function buildHtmlFromRespostas(data) {
+      const resp = data.respostas || {};
+      let html = '';
+
+      html += `<h2>DADOS DO CLIENTE E CONTATO</h2>`;
+      html += `<p><strong>Nome / Empresa:</strong> ${escapeHtml(resp.nome || data.clienteNome || '--')}</p>`;
+      html += `<p><strong>Contato:</strong> ${escapeHtml(resp.contato || data.clienteContato || '--')}</p>`;
+      html += `<p><strong>Prazo Desejado:</strong> ${escapeHtml(resp.prazo || data.prazo || '--')}</p>`;
+      html += `<p><strong>Orçamento Estimado:</strong> ${escapeHtml(resp.orcamento || data.orcamento || 'Não informado')}</p>`;
+
+      html += `<h2>RESPOSTAS DO QUESTIONÁRIO</h2>`;
+      for (const [key, val] of Object.entries(resp)) {
+        if (['nome', 'contato', 'prazo', 'orcamento'].includes(key)) continue;
+        if (typeof val === 'object' && val !== null) {
+          html += `<p><strong>${escapeHtml(key)}:</strong> <code>${escapeHtml(JSON.stringify(val))}</code></p>`;
+        } else {
+          html += `<p><strong>${escapeHtml(key)}:</strong> ${escapeHtml(String(val))}</p>`;
+        }
+      }
+
+      return html;
+    }
   }
 
   /* ==========================================================================
-     4. FORMULÁRIO DO CLIENTE (formulario.html / /briefing/formulario/)
+     4. FORMULÁRIO DO CLIENTE (formulario.html)
      ========================================================================== */
   if (currentPage === 'formulario') {
     let selectedCategory = '';
-    let currentStep = 1; // 1: Categoria, 2: Perguntas Específicas, 3: Contato & Envio
+    let currentStep = 1;
 
     const stepCategory = document.getElementById('stepCategory');
     const stepQuestions = document.getElementById('stepQuestions');
@@ -492,17 +557,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         selectedCategory = card.getAttribute('data-category-choice');
         
-        // Exibir o bloco de perguntas correto
         blockGrafico.style.display = (selectedCategory === 'grafico') ? 'block' : 'none';
         blockAudiovisual.style.display = (selectedCategory === 'audiovisual') ? 'block' : 'none';
         blockInterface.style.display = (selectedCategory === 'interface') ? 'block' : 'none';
 
-        // Avançar para a Etapa 2
         goToStep(2);
       });
     });
 
-    // Navegação entre passos
     if (btnBackToCategory) {
       btnBackToCategory.addEventListener('click', () => goToStep(1));
     }
@@ -520,261 +582,346 @@ document.addEventListener('DOMContentLoaded', () => {
       stepQuestions.style.display = (step === 2) ? 'block' : 'none';
       stepCommon.style.display = (step === 3) ? 'block' : 'none';
 
-      // Atualizar progresso
       const percent = Math.round((step / 3) * 100);
-      stepCounterText.textContent = `ETAPA ${step} DE 3`;
-      stepPercentText.textContent = `${percent}%`;
-      progressBarFill.style.width = `${percent}%`;
+      if (stepCounterText) stepCounterText.textContent = `ETAPA ${step} DE 3`;
+      if (stepPercentText) stepPercentText.textContent = `${percent}%`;
+      if (progressBarFill) progressBarFill.style.width = `${percent}%`;
 
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // Envio do formulário do cliente
+    // Envio do formulário (gravação sem leitura)
     if (btnSubmitForm) {
       btnSubmitForm.addEventListener('click', async () => {
-        const clientNome = document.getElementById('client_nome').value.trim();
-        const clientContato = document.getElementById('client_contato').value.trim();
-        const clientPrazo = document.getElementById('client_prazo').value.trim();
-        const clientOrcamento = document.getElementById('client_orcamento').value.trim();
+        const clientNome = document.getElementById('client_nome')?.value.trim();
+        const clientContato = document.getElementById('client_contato')?.value.trim();
+        const clientPrazo = document.getElementById('client_prazo')?.value.trim();
+        const clientOrcamento = document.getElementById('client_orcamento')?.value.trim() || '';
 
         if (!clientNome || !clientContato || !clientPrazo) {
           alert("Por favor, preencha os campos obrigatórios de nome, contato e prazo antes de enviar.");
           return;
         }
 
-        // Formatação estruturada em HTML das respostas da categoria
-        let title = '';
-        let htmlBody = '';
-        const todayStr = new Date().toISOString().split('T')[0];
+        // Limpar mensagens de erro prévias
+        const oldError = document.getElementById('formSubmissionError');
+        if (oldError) oldError.remove();
 
-        // Montar cabeçalho com dados de contato comuns
-        htmlBody += `
-          <h2>DADOS DO CLIENTE E CONTATO</h2>
-          <p><strong>Nome / Empresa:</strong> ${escapeHtml(clientNome)}</p>
-          <p><strong>Contato (Email / WhatsApp):</strong> ${escapeHtml(clientContato)}</p>
-          <p><strong>Prazo Desejado:</strong> ${escapeHtml(clientPrazo)}</p>
-          <p><strong>Orçamento Estimado:</strong> ${clientOrcamento ? escapeHtml(clientOrcamento) : 'Não informado'}</p>
-        `;
+        btnSubmitForm.disabled = true;
+        btnSubmitForm.textContent = 'REGISTRANDO NO SISTEMA...';
 
-        // 1. CATEGORIA: IDENTIDADE VISUAL
-        if (selectedCategory === 'grafico') {
-          const nomeMarca = document.getElementById('gv_nome').value.trim() || clientNome;
-          title = `Briefing Identidade Visual: ${nomeMarca}`;
+        try {
+          let title = '';
+          let htmlBody = '';
+          const respostasPorCampo = {
+            nome: clientNome,
+            contato: clientContato,
+            prazo: clientPrazo,
+            orcamento: clientOrcamento
+          };
 
-          const area = document.getElementById('gv_area').value.trim();
-          const publico = document.getElementById('gv_publico').value.trim();
-          const matPrev = document.querySelector('input[name="gv_material_previo"]:checked')?.value;
-          const matLink = document.getElementById('gv_material_link').value.trim();
-          const refGosta = document.getElementById('gv_ref_gosta').value.trim();
-          const refOdeia = document.getElementById('gv_ref_odeia').value.trim();
+          htmlBody += `
+            <h2>DADOS DO CLIENTE E CONTATO</h2>
+            <p><strong>Nome / Empresa:</strong> ${escapeHtml(clientNome)}</p>
+            <p><strong>Contato (Email / WhatsApp):</strong> ${escapeHtml(clientContato)}</p>
+            <p><strong>Prazo Desejado:</strong> ${escapeHtml(clientPrazo)}</p>
+            <p><strong>Orçamento Estimado:</strong> ${clientOrcamento ? escapeHtml(clientOrcamento) : 'Não informado'}</p>
+          `;
 
-          const apps = Array.from(document.querySelectorAll('input[name="gv_app"]:checked')).map(c => c.value);
-          if (apps.includes('Outro')) {
-            const outroTxt = document.getElementById('gv_app_outro_txt').value.trim();
-            if (outroTxt) apps.push(`Outro (${outroTxt})`);
+          // 1. IDENTIDADE VISUAL
+          if (selectedCategory === 'grafico') {
+            const nomeMarca = document.getElementById('gv_nome')?.value.trim() || clientNome;
+            title = `Briefing Identidade Visual: ${nomeMarca}`;
+
+            const area = document.getElementById('gv_area')?.value.trim() || '';
+            const publico = document.getElementById('gv_publico')?.value.trim() || '';
+            const matPrev = document.querySelector('input[name="gv_material_previo"]:checked')?.value || 'nao';
+            const matLink = document.getElementById('gv_material_link')?.value.trim() || '';
+            const refGosta = document.getElementById('gv_ref_gosta')?.value.trim() || '';
+            const refOdeia = document.getElementById('gv_ref_odeia')?.value.trim() || '';
+
+            const apps = Array.from(document.querySelectorAll('input[name="gv_app"]:checked')).map(c => c.value);
+            const outroTxt = document.getElementById('gv_app_outro_txt')?.value.trim();
+            if (apps.includes('Outro') && outroTxt) {
+              apps.push(`Outro (${outroTxt})`);
+            }
+
+            const idCoresGostaTexto = document.getElementById('id_cores_gosta_texto')?.value.trim() || '';
+            const idCoresNaoQuerTexto = document.getElementById('id_cores_nao_quer_texto')?.value.trim() || '';
+
+            const scale1 = document.querySelector('input[name="scale_gv_1"]:checked')?.value || '3';
+            const scale2 = document.querySelector('input[name="scale_gv_2"]:checked')?.value || '3';
+            const scale3 = document.querySelector('input[name="scale_gv_3"]:checked')?.value || '3';
+            const scale4 = document.querySelector('input[name="scale_gv_4"]:checked')?.value || '3';
+
+            respostasPorCampo.nomeMarca = nomeMarca;
+            respostasPorCampo.area = area;
+            respostasPorCampo.publico = publico;
+            respostasPorCampo.materialPrevio = matPrev;
+            respostasPorCampo.materialLink = matLink;
+            respostasPorCampo.refGosta = refGosta;
+            respostasPorCampo.refOdeia = refOdeia;
+            respostasPorCampo.aplicacoes = apps;
+            respostasPorCampo.coresGosta = [...colorArrays.id_cores_gosta];
+            respostasPorCampo.coresGostaTexto = idCoresGostaTexto;
+            respostasPorCampo.coresNaoQuer = [...colorArrays.id_cores_nao_quer];
+            respostasPorCampo.coresNaoQuerTexto = idCoresNaoQuerTexto;
+            respostasPorCampo.personalidade = {
+              minimalista_rico: scale1,
+              classico_moderno: scale2,
+              sobrio_vibrante: scale3,
+              delicado_robusto: scale4
+            };
+
+            const idCoresGostaHtml = colorArrays.id_cores_gosta.map(hex => 
+              `<span style="display:inline-block; vertical-align:middle; width:14px; height:14px; border-radius:3px; background-color:${hex}; border:1px solid #5A554C; margin-right:4px;"></span><code>${hex}</code>`
+            ).join(' ') || 'Nenhuma cor selecionada';
+
+            const idCoresNaoQuerHtml = colorArrays.id_cores_nao_quer.map(hex => 
+              `<span style="display:inline-block; vertical-align:middle; width:14px; height:14px; border-radius:3px; background-color:${hex}; border:1px solid #5A554C; margin-right:4px;"></span><code>${hex}</code>`
+            ).join(' ') || 'Nenhuma cor selecionada';
+
+            htmlBody += `
+              <h2>DETALHES DA MARCA E ESTÉTICA</h2>
+              <p><strong>Nome da Marca:</strong> ${escapeHtml(nomeMarca)}</p>
+              <p><strong>Área de Atuação:</strong> ${escapeHtml(area)}</p>
+              <p><strong>Público-Alvo:</strong> ${escapeHtml(publico)}</p>
+              <p><strong>Material Prévio:</strong> ${matPrev === 'sim' ? 'Sim (' + escapeHtml(matLink) + ')' : 'Não, começando do zero'}</p>
+              <p><strong>Referências que Gosta:</strong> ${escapeHtml(refGosta) || 'Nenhuma informada'}</p>
+              <p><strong>O que Definitivamente Não Quer:</strong> ${escapeHtml(refOdeia) || 'Nenhum item informado'}</p>
+              <p><strong>Aplicações Desejadas:</strong> ${apps.length ? escapeHtml(apps.join(', ')) : 'Não informado'}</p>
+              
+              <h2>DIREÇÃO DE CORES</h2>
+              <p><strong>Cores que Gosta:</strong> ${idCoresGostaHtml} ${idCoresGostaTexto ? '(' + escapeHtml(idCoresGostaTexto) + ')' : ''}</p>
+              <p><strong>Cores a Evitar:</strong> ${idCoresNaoQuerHtml} ${idCoresNaoQuerTexto ? '(' + escapeHtml(idCoresNaoQuerTexto) + ')' : ''}</p>
+
+              <h2>PERSONALIDADE DA MARCA (1 A 5)</h2>
+              <ul>
+                <li>Minimalista (1) &bull; Rico em Elementos (5): <strong>${scale1} / 5</strong></li>
+                <li>Clássico (1) &bull; Moderno (5): <strong>${scale2} / 5</strong></li>
+                <li>Sóbrio (1) &bull; Vibrante (5): <strong>${scale3} / 5</strong></li>
+                <li>Delicado (1) &bull; Robusto (5): <strong>${scale4} / 5</strong></li>
+              </ul>
+            `;
           }
 
-          // Cores Identidade Visual
-          const idCoresGostaTexto = document.getElementById('id_cores_gosta_texto')?.value.trim() || '';
-          const idCoresNaoQuerTexto = document.getElementById('id_cores_nao_quer_texto')?.value.trim() || '';
+          // 2. AUDIOVISUAL
+          else if (selectedCategory === 'audiovisual') {
+            title = `Briefing Audiovisual: ${clientNome}`;
 
-          const coresGostaHtml = colorArrays.id_cores_gosta.map(hex => 
-            `<span style="display:inline-block; vertical-align:middle; width:14px; height:14px; border-radius:3px; background-color:${hex}; border:1px solid #5A554C; margin-right:4px;"></span><code>${hex}</code>`
-          ).join(' ') || 'Nenhuma cor selecionada';
+            const tipoVideo = document.getElementById('av_tipo')?.value.trim() || '';
+            const duracao = document.getElementById('av_duracao')?.value.trim() || '';
+            const objetivo = document.getElementById('av_objetivo')?.value.trim() || '';
+            const roteiro = document.querySelector('input[name="av_roteiro"]:checked')?.value || 'nao';
+            const roteiroLink = document.getElementById('av_roteiro_link')?.value.trim() || '';
+            const locucao = document.querySelector('input[name="av_locucao"]:checked')?.value || 'sem_locucao';
+            const trilha = document.querySelector('input[name="av_trilha"]:checked')?.value || 'livre_royalties';
+            const ref = document.getElementById('av_ref')?.value.trim() || '';
+            const formato = document.querySelector('input[name="av_formato"]:checked')?.value || 'horizontal';
 
-          const coresNaoQuerHtml = colorArrays.id_cores_nao_quer.map(hex => 
-            `<span style="display:inline-block; vertical-align:middle; width:14px; height:14px; border-radius:3px; background-color:${hex}; border:1px solid #5A554C; margin-right:4px;"></span><code>${hex}</code>`
-          ).join(' ') || 'Nenhuma cor selecionada';
+            const scale1 = document.querySelector('input[name="scale_av_1"]:checked')?.value || '3';
+            const scale2 = document.querySelector('input[name="scale_av_2"]:checked')?.value || '3';
+            const scale3 = document.querySelector('input[name="scale_av_3"]:checked')?.value || '3';
+            const scale4 = document.querySelector('input[name="scale_av_4"]:checked')?.value || '3';
 
-          const scale1 = document.querySelector('input[name="scale_gv_1"]:checked')?.value || '3';
-          const scale2 = document.querySelector('input[name="scale_gv_2"]:checked')?.value || '3';
-          const scale3 = document.querySelector('input[name="scale_gv_3"]:checked')?.value || '3';
-          const scale4 = document.querySelector('input[name="scale_gv_4"]:checked')?.value || '3';
-          const scale5 = document.querySelector('input[name="scale_gv_5"]:checked')?.value || '3';
+            respostasPorCampo.tipoVideo = tipoVideo;
+            respostasPorCampo.duracao = duracao;
+            respostasPorCampo.objetivo = objetivo;
+            respostasPorCampo.roteiro = roteiro;
+            respostasPorCampo.roteiroLink = roteiroLink;
+            respostasPorCampo.locucao = locucao;
+            respostasPorCampo.trilha = trilha;
+            respostasPorCampo.referencias = ref;
+            respostasPorCampo.formato = formato;
+            respostasPorCampo.ritmo = {
+              lento_dinamico: scale1,
+              linear_fragmentado: scale2,
+              sobrio_impactante: scale3,
+              discreto_cinematografico: scale4
+            };
 
-          htmlBody += `
-            <h2>ESPECIFICAÇÕES DA IDENTIDADE VISUAL</h2>
-            <p><strong>Área de Atuação:</strong> ${escapeHtml(area)}</p>
-            <p><strong>Público-Alvo:</strong> ${escapeHtml(publico)}</p>
-            <p><strong>Material Existente:</strong> ${matPrev === 'sim' ? 'Sim (' + escapeHtml(matLink) + ')' : 'Não, projeto do zero'}</p>
-            <p><strong>Referências que Gosta:</strong> ${escapeHtml(refGosta) || 'Nenhuma informada'}</p>
-            <p><strong>Referências a Evitar:</strong> ${escapeHtml(refOdeia) || 'Nenhuma informada'}</p>
-            <p><strong>Aplicações Solicitadas:</strong> ${apps.length ? apps.join(', ') : 'Não especificado'}</p>
-            
-            <h2>DIREÇÃO DE CORES</h2>
-            <p><strong>Cores que Gosta:</strong> ${coresGostaHtml} ${idCoresGostaTexto ? '(' + escapeHtml(idCoresGostaTexto) + ')' : ''}</p>
-            <p><strong>Cores a Evitar:</strong> ${coresNaoQuerHtml} ${idCoresNaoQuerTexto ? '(' + escapeHtml(idCoresNaoQuerTexto) + ')' : ''}</p>
+            htmlBody += `
+              <h2>DIRETRIZES DA PRODUÇÃO AUDIOVISUAL</h2>
+              <p><strong>Tipo de Vídeo:</strong> ${escapeHtml(tipoVideo)}</p>
+              <p><strong>Duração Estimada:</strong> ${escapeHtml(duracao)}</p>
+              <p><strong>Objetivo Principal:</strong> ${escapeHtml(objetivo)}</p>
+              <p><strong>Roteiro / Decupagem:</strong> ${roteiro === 'sim' ? 'Sim (' + escapeHtml(roteiroLink) + ')' : 'Não, a desenvolver'}</p>
+              <p><strong>Locução:</strong> ${escapeHtml(locucao)}</p>
+              <p><strong>Trilha Sonora:</strong> ${escapeHtml(trilha)}</p>
+              <p><strong>Referências Visuais:</strong> ${escapeHtml(ref) || 'Nenhuma informada'}</p>
+              <p><strong>Formato de Exibição:</strong> ${escapeHtml(formato)}</p>
 
-            <h2>PERSONALIDADE DA MARCA (1 A 5)</h2>
-            <ul>
-              <li>Clássico (1) &bull; Moderno (5): <strong>${scale1} / 5</strong></li>
-              <li>Sério (1) &bull; Descontraído (5): <strong>${scale2} / 5</strong></li>
-              <li>Minimalista (1) &bull; Elaborado (5): <strong>${scale3} / 5</strong></li>
-              <li>Discreto (1) &bull; Ousado (5): <strong>${scale4} / 5</strong></li>
-              <li>Tradicional (1) &bull; Inovador (5): <strong>${scale5} / 5</strong></li>
-            </ul>
-          `;
-        }
-
-        // 2. CATEGORIA: PRODUÇÃO AUDIOVISUAL
-        else if (selectedCategory === 'audiovisual') {
-          title = `Briefing Audiovisual: ${clientNome}`;
-
-          const tipoPeca = document.querySelector('input[name="av_tipo"]:checked')?.value || 'Institucional';
-          const duracao = document.querySelector('input[name="av_duracao"]:checked')?.value || '1 a 3 min';
-          const objetivo = document.getElementById('av_objetivo').value.trim();
-          const publico = document.getElementById('av_publico').value.trim();
-          const ref = document.getElementById('av_ref').value.trim();
-          const roteiro = document.querySelector('input[name="av_roteiro"]:checked')?.value;
-          const recursos = Array.from(document.querySelectorAll('input[name="av_recursos"]:checked')).map(c => c.value);
-          const trilha = document.querySelector('input[name="av_trilha"]:checked')?.value;
-
-          const scale1 = document.querySelector('input[name="scale_av_1"]:checked')?.value || '3';
-          const scale2 = document.querySelector('input[name="scale_av_2"]:checked')?.value || '3';
-          const scale3 = document.querySelector('input[name="scale_av_3"]:checked')?.value || '3';
-          const scale4 = document.querySelector('input[name="scale_av_4"]:checked')?.value || '3';
-
-          htmlBody += `
-            <h2>ESPECIFICAÇÕES DO VÍDEO</h2>
-            <p><strong>Tipo de Peça:</strong> ${escapeHtml(tipoPeca)}</p>
-            <p><strong>Duração Estimada:</strong> ${escapeHtml(duracao)}</p>
-            <p><strong>Objetivo do Vídeo:</strong> ${escapeHtml(objetivo)}</p>
-            <p><strong>Público-Alvo:</strong> ${escapeHtml(publico)}</p>
-            <p><strong>Referências:</strong> ${escapeHtml(ref) || 'Nenhuma informada'}</p>
-            <p><strong>Situação do Roteiro:</strong> ${escapeHtml(roteiro)}</p>
-            <p><strong>Recursos Disponíveis:</strong> ${recursos.length ? recursos.join(', ') : 'Nenhum'}</p>
-            <p><strong>Trilha Sonora:</strong> ${escapeHtml(trilha)}</p>
-            
-            <h2>TOM E ATMOSFERA DESEJADA (1 A 5)</h2>
-            <ul>
-              <li>Sério (1) &bull; Divertido (5): <strong>${scale1} / 5</strong></li>
-              <li>Realista (1) &bull; Estilizado (5): <strong>${scale2} / 5</strong></li>
-              <li>Calmo (1) &bull; Dinâmico (5): <strong>${scale3} / 5</strong></li>
-              <li>Sombrio (1) &bull; Luminoso (5): <strong>${scale4} / 5</strong></li>
-            </ul>
-          `;
-        }
-
-        // 3. CATEGORIA: INTERFACE (UI/UX)
-        else if (selectedCategory === 'interface') {
-          title = `Briefing Interface: ${clientNome}`;
-
-          const tipoProj = document.querySelector('input[name="ui_tipo"]:checked')?.value || 'Site';
-          const plataforma = document.querySelector('input[name="ui_plat"]:checked')?.value || 'Ambos';
-          const funcs = document.getElementById('ui_funcs').value.trim();
-          const publico = document.getElementById('ui_publico').value.trim();
-          const idPrev = document.querySelector('input[name="ui_id_prev"]:checked')?.value;
-          const idLink = document.getElementById('ui_id_link').value.trim();
-          const ref = document.getElementById('ui_ref').value.trim();
-          const complexidade = document.querySelector('input[name="ui_complex"]:checked')?.value || 'Poucas telas';
-
-          // Cores Interface
-          const uiCoresGostaTexto = document.getElementById('ui_cores_gosta_texto')?.value.trim() || '';
-          const uiCoresNaoQuerTexto = document.getElementById('ui_cores_nao_quer_texto')?.value.trim() || '';
-
-          const uiCoresGostaHtml = colorArrays.ui_cores_gosta.map(hex => 
-            `<span style="display:inline-block; vertical-align:middle; width:14px; height:14px; border-radius:3px; background-color:${hex}; border:1px solid #5A554C; margin-right:4px;"></span><code>${hex}</code>`
-          ).join(' ') || 'Nenhuma cor selecionada';
-
-          const uiCoresNaoQuerHtml = colorArrays.ui_cores_nao_quer.map(hex => 
-            `<span style="display:inline-block; vertical-align:middle; width:14px; height:14px; border-radius:3px; background-color:${hex}; border:1px solid #5A554C; margin-right:4px;"></span><code>${hex}</code>`
-          ).join(' ') || 'Nenhuma cor selecionada';
-
-          const scale1 = document.querySelector('input[name="scale_ui_1"]:checked')?.value || '3';
-          const scale2 = document.querySelector('input[name="scale_ui_2"]:checked')?.value || '3';
-          const scale3 = document.querySelector('input[name="scale_ui_3"]:checked')?.value || '3';
-          const scale4 = document.querySelector('input[name="scale_ui_4"]:checked')?.value || '3';
-
-          htmlBody += `
-            <h2>ESPECIFICAÇÕES DO SISTEMA / INTERFACE</h2>
-            <p><strong>Tipo de Projeto:</strong> ${escapeHtml(tipoProj)}</p>
-            <p><strong>Plataforma Alvo:</strong> ${escapeHtml(plataforma)}</p>
-            <p><strong>Funcionalidades Principais:</strong> ${escapeHtml(funcs)}</p>
-            <p><strong>Público-Alvo / Usuário:</strong> ${escapeHtml(publico)}</p>
-            <p><strong>Identidade Visual Anterior:</strong> ${idPrev === 'sim' ? 'Sim (' + escapeHtml(idLink) + ')' : 'Não, a definir'}</p>
-            <p><strong>Referências de Interface:</strong> ${escapeHtml(ref) || 'Nenhuma informada'}</p>
-            <p><strong>Nível de Complexidade:</strong> ${escapeHtml(complexidade)}</p>
-            
-            <h2>DIREÇÃO DE CORES</h2>
-            <p><strong>Cores que Gosta:</strong> ${uiCoresGostaHtml} ${uiCoresGostaTexto ? '(' + escapeHtml(uiCoresGostaTexto) + ')' : ''}</p>
-            <p><strong>Cores a Evitar:</strong> ${uiCoresNaoQuerHtml} ${uiCoresNaoQuerTexto ? '(' + escapeHtml(uiCoresNaoQuerTexto) + ')' : ''}</p>
-
-            <h2>PERSONALIDADE DA INTERFACE (1 A 5)</h2>
-            <ul>
-              <li>Minimalista (1) &bull; Rico em Elementos (5): <strong>${scale1} / 5</strong></li>
-              <li>Sério (1) &bull; Lúdico (5): <strong>${scale2} / 5</strong></li>
-              <li>Formal (1) &bull; Descontraído (5): <strong>${scale3} / 5</strong></li>
-              <li>Denso (1) &bull; Espaçoso (5): <strong>${scale4} / 5</strong></li>
-            </ul>
-          `;
-        }
-
-        const newBriefingDoc = {
-          titulo: title,
-          categoria: selectedCategory,
-          createdAt: todayStr,
-          origem: 'Formulário do Cliente',
-          linkMaterial: '',
-          conteudo: htmlBody,
-          pdfFlag: true
-        };
-
-        if (selectedCategory === 'grafico') {
-          newBriefingDoc.id_cores_gosta = colorArrays.id_cores_gosta;
-          newBriefingDoc.id_cores_nao_quer = colorArrays.id_cores_nao_quer;
-          newBriefingDoc.id_cores_gosta_texto = document.getElementById('id_cores_gosta_texto')?.value.trim() || '';
-          newBriefingDoc.id_cores_nao_quer_texto = document.getElementById('id_cores_nao_quer_texto')?.value.trim() || '';
-        } else if (selectedCategory === 'interface') {
-          newBriefingDoc.ui_cores_gosta = colorArrays.ui_cores_gosta;
-          newBriefingDoc.ui_cores_nao_quer = colorArrays.ui_cores_nao_quer;
-          newBriefingDoc.ui_cores_gosta_texto = document.getElementById('ui_cores_gosta_texto')?.value.trim() || '';
-          newBriefingDoc.ui_cores_nao_quer_texto = document.getElementById('ui_cores_nao_quer_texto')?.value.trim() || '';
-        }
-
-        // Salvar no Firestore ou localStorage
-        if (db && isFirebaseConfigured) {
-          try {
-            await db.collection("briefings").add(newBriefingDoc);
-          } catch (err) {
-            console.warn("Erro ao gravar no Firestore, salvando no repositório local:", err);
-            saveLocalBriefing(newBriefingDoc);
+              <h2>RITMO E LINGUAGEM DE MONTAGEM (1 A 5)</h2>
+              <ul>
+                <li>Lento / Contemplativo (1) &bull; Rápido / Dinâmico (5): <strong>${scale1} / 5</strong></li>
+                <li>Linear (1) &bull; Fragmentado (5): <strong>${scale2} / 5</strong></li>
+                <li>Sóbrio (1) &bull; Impactante / Efeitos (5): <strong>${scale3} / 5</strong></li>
+                <li>Discreto (1) &bull; Cinematográfico (5): <strong>${scale4} / 5</strong></li>
+              </ul>
+            `;
           }
-        } else {
-          saveLocalBriefing(newBriefingDoc);
+
+          // 3. INTERFACE (UX/UI)
+          else if (selectedCategory === 'interface') {
+            title = `Briefing Interface: ${clientNome}`;
+
+            const tipoProj = document.getElementById('ui_tipo')?.value.trim() || '';
+            const plataforma = document.querySelector('input[name="ui_plataforma"]:checked')?.value || 'web';
+            const funcs = document.getElementById('ui_funcs')?.value.trim() || '';
+            const publico = document.getElementById('ui_publico')?.value.trim() || '';
+            const idPrev = document.querySelector('input[name="ui_id_prev"]:checked')?.value || 'nao';
+            const idLink = document.getElementById('ui_id_link')?.value.trim() || '';
+            const ref = document.getElementById('ui_ref')?.value.trim() || '';
+            const complexidade = document.querySelector('input[name="ui_complex"]:checked')?.value || 'Poucas telas';
+
+            const uiCoresGostaTexto = document.getElementById('ui_cores_gosta_texto')?.value.trim() || '';
+            const uiCoresNaoQuerTexto = document.getElementById('ui_cores_nao_quer_texto')?.value.trim() || '';
+
+            const uiCoresGostaHtml = colorArrays.ui_cores_gosta.map(hex => 
+              `<span style="display:inline-block; vertical-align:middle; width:14px; height:14px; border-radius:3px; background-color:${hex}; border:1px solid #5A554C; margin-right:4px;"></span><code>${hex}</code>`
+            ).join(' ') || 'Nenhuma cor selecionada';
+
+            const uiCoresNaoQuerHtml = colorArrays.ui_cores_nao_quer.map(hex => 
+              `<span style="display:inline-block; vertical-align:middle; width:14px; height:14px; border-radius:3px; background-color:${hex}; border:1px solid #5A554C; margin-right:4px;"></span><code>${hex}</code>`
+            ).join(' ') || 'Nenhuma cor selecionada';
+
+            const scale1 = document.querySelector('input[name="scale_ui_1"]:checked')?.value || '3';
+            const scale2 = document.querySelector('input[name="scale_ui_2"]:checked')?.value || '3';
+            const scale3 = document.querySelector('input[name="scale_ui_3"]:checked')?.value || '3';
+            const scale4 = document.querySelector('input[name="scale_ui_4"]:checked')?.value || '3';
+
+            respostasPorCampo.tipoProjeto = tipoProj;
+            respostasPorCampo.plataforma = plataforma;
+            respostasPorCampo.funcionalidades = funcs;
+            respostasPorCampo.publico = publico;
+            respostasPorCampo.idPrevia = idPrev;
+            respostasPorCampo.idLink = idLink;
+            respostasPorCampo.referencias = ref;
+            respostasPorCampo.complexidade = complexidade;
+            respostasPorCampo.coresGosta = [...colorArrays.ui_cores_gosta];
+            respostasPorCampo.coresGostaTexto = uiCoresGostaTexto;
+            respostasPorCampo.coresNaoQuer = [...colorArrays.ui_cores_nao_quer];
+            respostasPorCampo.coresNaoQuerTexto = uiCoresNaoQuerTexto;
+            respostasPorCampo.personalidade = {
+              minimalista_rico: scale1,
+              serio_ludico: scale2,
+              formal_descontraido: scale3,
+              denso_espacoso: scale4
+            };
+
+            htmlBody += `
+              <h2>ESPECIFICAÇÕES DO SISTEMA / INTERFACE</h2>
+              <p><strong>Tipo de Projeto:</strong> ${escapeHtml(tipoProj)}</p>
+              <p><strong>Plataforma Alvo:</strong> ${escapeHtml(plataforma)}</p>
+              <p><strong>Funcionalidades Principais:</strong> ${escapeHtml(funcs)}</p>
+              <p><strong>Público-Alvo / Usuário:</strong> ${escapeHtml(publico)}</p>
+              <p><strong>Identidade Visual Anterior:</strong> ${idPrev === 'sim' ? 'Sim (' + escapeHtml(idLink) + ')' : 'Não, a definir'}</p>
+              <p><strong>Referências de Interface:</strong> ${escapeHtml(ref) || 'Nenhuma informada'}</p>
+              <p><strong>Nível de Complexidade:</strong> ${escapeHtml(complexidade)}</p>
+              
+              <h2>DIREÇÃO DE CORES</h2>
+              <p><strong>Cores que Gosta:</strong> ${uiCoresGostaHtml} ${uiCoresGostaTexto ? '(' + escapeHtml(uiCoresGostaTexto) + ')' : ''}</p>
+              <p><strong>Cores a Evitar:</strong> ${uiCoresNaoQuerHtml} ${uiCoresNaoQuerTexto ? '(' + escapeHtml(uiCoresNaoQuerTexto) + ')' : ''}</p>
+
+              <h2>PERSONALIDADE DA INTERFACE (1 A 5)</h2>
+              <ul>
+                <li>Minimalista (1) &bull; Rico em Elementos (5): <strong>${scale1} / 5</strong></li>
+                <li>Sério (1) &bull; Lúdico (5): <strong>${scale2} / 5</strong></li>
+                <li>Formal (1) &bull; Descontraído (5): <strong>${scale3} / 5</strong></li>
+                <li>Denso (1) &bull; Espaçoso (5): <strong>${scale4} / 5</strong></li>
+              </ul>
+            `;
+          }
+
+          // Documento gravado na coleção "briefings" com addDoc e serverTimestamp
+          const briefingDoc = {
+            categoria: selectedCategory,
+            titulo: title,
+            clienteNome: clientNome,
+            clienteContato: clientContato,
+            prazo: clientPrazo,
+            orcamento: clientOrcamento || 'A definir',
+            respostas: respostasPorCampo,
+            conteudo: htmlBody,
+            criadoEm: serverTimestamp()
+          };
+
+          // Gravação direta no Firestore (sem leituras)
+          await addDoc(collection(db, "briefings"), briefingDoc);
+
+          // Mostra confirmação ao terminar
+          if (progressContainer) progressContainer.style.display = 'none';
+          if (stepCategory) stepCategory.style.display = 'none';
+          if (stepQuestions) stepQuestions.style.display = 'none';
+          if (stepCommon) stepCommon.style.display = 'none';
+
+          if (stepConfirmation) {
+            stepConfirmation.style.display = 'block';
+          }
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        } catch (err) {
+          console.error("Erro ao gravar briefing no Firestore:", err);
+          btnSubmitForm.disabled = false;
+          btnSubmitForm.textContent = 'REGISTRAR DOSSIÊ AGORA \u2192';
+
+          const errorBox = document.createElement('div');
+          errorBox.id = 'formSubmissionError';
+          errorBox.className = 'feedback-msg feedback-error';
+          errorBox.style.display = 'block';
+          errorBox.style.marginTop = '1.5rem';
+          errorBox.innerHTML = `
+            <strong>Não foi possível registrar o briefing no sistema:</strong><br>
+            ${escapeHtml(err.message)}<br>
+            <span style="font-size: 0.85rem; color: #1A1510;">Por favor, verifique a sua conexão com a internet ou tente novamente em instantes.</span>
+          `;
+
+          stepCommon.appendChild(errorBox);
+          errorBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
-
-        // Ocultar formulário e exibir tela de confirmação direta
-        progressContainer.style.display = 'none';
-        stepCategory.style.display = 'none';
-        stepQuestions.style.display = 'none';
-        stepCommon.style.display = 'none';
-
-        stepConfirmation.style.display = 'block';
-        window.scrollTo({ top: 0, behavior: 'smooth' });
       });
     }
   }
 
   /* ==========================================================================
-     5. UTILITÁRIOS AUXILIARES
+     UTILITÁRIOS AUXILIARES DE FORMATAÇÃO
      ========================================================================== */
-  function formatDate(dateStr) {
-    if (!dateStr) return '--/--/----';
-    const parts = dateStr.split('-');
-    if (parts.length === 3) {
-      return `${parts[2]}/${parts[1]}/${parts[0]}`;
+  function formatTimestamp(ts) {
+    if (!ts) return '--/--/----';
+    let date;
+    if (typeof ts.toDate === 'function') {
+      date = ts.toDate();
+    } else if (ts instanceof Date) {
+      date = ts;
+    } else if (typeof ts === 'string') {
+      const parts = ts.split('-');
+      if (parts.length === 3) {
+        return `${parts[2]}/${parts[1]}/${parts[0]}`;
+      }
+      return ts;
+    } else if (ts.seconds) {
+      date = new Date(ts.seconds * 1000);
+    } else {
+      return '--/--/----';
     }
-    return dateStr;
+
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, '0');
+    const mins = String(date.getMinutes()).padStart(2, '0');
+
+    return `${day}/${month}/${year} às ${hours}:${mins}`;
   }
 
   function escapeHtml(str) {
-    if (!str) return '';
-    return str
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
+    if (str === null || str === undefined) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
   }
 
 });
